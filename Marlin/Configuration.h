@@ -675,7 +675,7 @@
 #define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z
 
 // Speed for the "accurate" probe of each point
-#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 2)
+#define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 3)
 
 // Use double touch for probing
 //#define PROBE_DOUBLE_TOUCH
@@ -1528,7 +1528,7 @@
 //#define BLINKM
 
 //define PCA9632 PWM LED driver Support
-//#define PCA9632
+#define PCA9632
 
 /**
  * RGB LED / LED Strip Control
