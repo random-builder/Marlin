@@ -420,7 +420,8 @@
  *    M908 - BQ_ZUM_MEGA_3D, RAMBO, PRINTRBOARD_REVF, RIGIDBOARD_V2 & SCOOVO_X9H
  *    M909, M910 & LCD - only PRINTRBOARD_REVF & RIGIDBOARD_V2
  */
-//#define PWM_MOTOR_CURRENT { 1300, 1300, 1250 }          // Values in milliamps
+//Motor current PWM conversion, PWM value = MotorCurrentSetting * 255 / range
+#define PWM_MOTOR_CURRENT { 1200, 1200, 1000 }          // Values in milliamps
 //#define DIGIPOT_MOTOR_CURRENT { 135,135,135,135,135 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
 //#define DAC_MOTOR_CURRENT_DEFAULT { 70, 80, 90, 80 }    // Default drive percent - X, Y, Z, E axis
 
@@ -589,7 +590,7 @@
  *
  * Warning: Does not respect endstops!
  */
-//#define BABYSTEPPING
+#define BABYSTEPPING
 #if ENABLED(BABYSTEPPING)
   #define BABYSTEP_XY              // Also enable X/Y Babystepping. Not supported on DELTA!
   #define BABYSTEP_INVERT_Z false  // Change if Z babysteps should go the other way
@@ -1245,22 +1246,22 @@
  */
 #define CUSTOM_USER_MENUS
 #if ENABLED(CUSTOM_USER_MENUS)
-  #define USER_SCRIPT_DONE "M117 Command Complete"
+  #define USER_SCRIPT_DONE "M117 Command Executed"
 
   #define USER_DESC_1 "Auto Home"
-  #define USER_GCODE_1 "G28"
+  #define USER_GCODE_1 "G28\n"
 
   #define USER_DESC_2 "Lower Plate"
-  #define USER_GCODE_2 "G0 X100 Y0 Z200 F9000" // Note: expects soft stops
+  #define USER_GCODE_2 "G90\n G0 X100 Y0 Z170 F9000\n"
 
   #define USER_DESC_3 "Preheat for PLA"
-  #define USER_GCODE_3 "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
+  #define USER_GCODE_3 "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\n M104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
 
   #define USER_DESC_4 "Preheat for ABS"
-  #define USER_GCODE_4 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
+  #define USER_GCODE_4 "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\n M104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
 
   #define USER_DESC_5 "Nozzle Cleanup"
-  #define USER_GCODE_5 "G28\nG12 P1 S2 T3\n"
+  #define USER_GCODE_5 "G28\n G12 P1 S2 T3\n"
 #endif
 
 //===========================================================================

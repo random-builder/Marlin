@@ -74,7 +74,7 @@
 // User-specified version info of this build to display in [Pronterface, etc] terminal window during
 // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
 // build by the user have been successfully uploaded into firmware.
-#define STRING_CONFIG_H_AUTHOR "(random-builder, base)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(random-builder, probe)" // Who made the changes.
 #define SHOW_BOOTSCREEN
 #define STRING_SPLASH_LINE1 SHORT_BUILD_VERSION // will be shown during bootup in line 1
 #define STRING_SPLASH_LINE2 WEBSITE_URL         // will be shown during bootup in line 2
@@ -126,7 +126,7 @@
 
 // Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
-#define CUSTOM_MACHINE_NAME "WD6/base"
+#define CUSTOM_MACHINE_NAME "WD6/probe"
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
@@ -602,13 +602,13 @@
  * Use G29 repeatedly, adjusting the Z height at each point with movement commands
  * or (with LCD_BED_LEVELING) the LCD controller.
  */
-#define PROBE_MANUALLY
+//#define PROBE_MANUALLY
 
 /**
  * A Fix-Mounted Probe either doesn't deploy or needs manual deployment.
  *   (e.g., an inductive probe or a nozzle-based probe-switch.)
  */
-//#define FIX_MOUNTED_PROBE
+#define FIX_MOUNTED_PROBE
 
 /**
  * Z Servo Probe, such as an endstop switch on a rotating arm.
@@ -702,7 +702,7 @@
 #define Z_PROBE_OFFSET_RANGE_MAX 20
 
 // Enable the M48 repeatability test to test probe accuracy
-//#define Z_MIN_PROBE_REPEATABILITY_TEST
+#define Z_MIN_PROBE_REPEATABILITY_TEST
 
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
 // :{ 0:'Low', 1:'High' }
@@ -765,9 +765,9 @@
 #define Z_MAX_POS 170
 
 // If enabled, axes won't move below MIN_POS in response to movement commands.
-#define MIN_SOFTWARE_ENDSTOPS
+//#define MIN_SOFTWARE_ENDSTOPS
 // If enabled, axes won't move above MAX_POS in response to movement commands.
-#define MAX_SOFTWARE_ENDSTOPS
+//#define MAX_SOFTWARE_ENDSTOPS
 
 /**
  * Filament Runout Sensor
@@ -830,8 +830,8 @@
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
 //#define AUTO_BED_LEVELING_BILINEAR
-//#define AUTO_BED_LEVELING_UBL
-#define MESH_BED_LEVELING
+#define AUTO_BED_LEVELING_UBL
+//#define MESH_BED_LEVELING
 
 /**
  * Enable detailed logging of G28, G29, M48, etc.
@@ -854,13 +854,32 @@
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Set the boundaries for probing (where the probe can reach).
-  #define LEFT_PROBE_BED_POSITION 15
-  #define RIGHT_PROBE_BED_POSITION 170
-  #define FRONT_PROBE_BED_POSITION 20
-  #define BACK_PROBE_BED_POSITION 170
+  //#define LEFT_PROBE_BED_POSITION 15
+  //#define RIGHT_PROBE_BED_POSITION 170
+  //#define FRONT_PROBE_BED_POSITION 20
+  //#define BACK_PROBE_BED_POSITION 170
+
+  // Set the boundaries for probing (where the probe can reach).
+  #if X_PROBE_OFFSET_FROM_EXTRUDER > 0
+  	#define LEFT_PROBE_BED_POSITION  X_MIN_POS + X_PROBE_OFFSET_FROM_EXTRUDER + MIN_PROBE_EDGE
+  	#define RIGHT_PROBE_BED_POSITION X_MAX_POS - MIN_PROBE_EDGE
+  #else
+  	#define LEFT_PROBE_BED_POSITION  X_MIN_POS + MIN_PROBE_EDGE
+  	#define RIGHT_PROBE_BED_POSITION X_MAX_POS + X_PROBE_OFFSET_FROM_EXTRUDER - MIN_PROBE_EDGE
+  #endif
+
+
+  #if Y_PROBE_OFFSET_FROM_EXTRUDER > 0
+    #define FRONT_PROBE_BED_POSITION Y_MIN_POS + Y_PROBE_OFFSET_FROM_EXTRUDER + MIN_PROBE_EDGE
+    #define BACK_PROBE_BED_POSITION  Y_MAX_POS - MIN_PROBE_EDGE
+  #else
+    #define FRONT_PROBE_BED_POSITION Y_MIN_POS + MIN_PROBE_EDGE
+    #define BACK_PROBE_BED_POSITION  Y_MAX_POS + Y_PROBE_OFFSET_FROM_EXTRUDER - MIN_PROBE_EDGE
+  #endif
+
 
   // The Z probe minimum outer margin (to validate G29 parameters).
-  #define MIN_PROBE_EDGE 10
+  #define MIN_PROBE_EDGE 30
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
@@ -900,16 +919,16 @@
   //========================= Unified Bed Leveling ============================
   //===========================================================================
 
-  #define UBL_MESH_INSET 1          // Mesh inset margin on print area
-  #define GRID_MAX_POINTS_X 10      // Don't use more than 15 points per axis, implementation limited.
+  #define UBL_MESH_INSET 35          // Mesh inset margin on print area
+  #define GRID_MAX_POINTS_X 5      // Don't use more than 15 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
-  #define UBL_PROBE_PT_1_X 39       // Probing points for 3-Point leveling of the mesh
-  #define UBL_PROBE_PT_1_Y 180
-  #define UBL_PROBE_PT_2_X 39
-  #define UBL_PROBE_PT_2_Y 20
-  #define UBL_PROBE_PT_3_X 180
-  #define UBL_PROBE_PT_3_Y 20
+  #define UBL_PROBE_PT_1_X 35       // Probing points for 3-Point leveling of the mesh
+  #define UBL_PROBE_PT_1_Y 165
+  #define UBL_PROBE_PT_2_X 35
+  #define UBL_PROBE_PT_2_Y 35
+  #define UBL_PROBE_PT_3_X 165
+  #define UBL_PROBE_PT_3_Y 35
 
   #define UBL_G26_MESH_VALIDATION   // Enable G26 mesh validation
   #define UBL_MESH_EDIT_MOVES_Z     // Sophisticated users prefer no movement of nozzle
@@ -932,7 +951,7 @@
  * Use the LCD controller for bed leveling
  * Requires MESH_BED_LEVELING or PROBE_MANUALLY
  */
-#define LCD_BED_LEVELING
+//#define LCD_BED_LEVELING
 
 #if ENABLED(LCD_BED_LEVELING)
   #define MBL_Z_STEP 0.025    // Step size while manually probing Z axis.
@@ -1509,7 +1528,7 @@
 //#define BLINKM
 
 //define PCA9632 PWM LED driver Support
-//#define PCA9632
+#define PCA9632
 
 /**
  * RGB LED / LED Strip Control
