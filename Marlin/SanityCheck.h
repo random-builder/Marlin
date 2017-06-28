@@ -276,9 +276,7 @@
 #if ENABLED(I2C_POSITION_ENCODERS)
   #if DISABLED(BABYSTEPPING)
     #error "I2C_POSITION_ENCODERS requires BABYSTEPPING."
-  #endif
-
-  #if I2CPE_ENCODER_CNT > 5 || I2CPE_ENCODER_CNT < 1
+  #elif !WITHIN(I2CPE_ENCODER_CNT, 1, 5)
     #error "I2CPE_ENCODER_CNT must be between 1 and 5."
   #endif
 #endif
@@ -352,8 +350,19 @@
     #error "EXTRUDERS must be 1 with HEATERS_PARALLEL."
   #endif
 
+#elif ENABLED(MK2_MULTIPLEXER)
+  #error "MK2_MULTIPLEXER requires 2 or more EXTRUDERS."
 #elif ENABLED(SINGLENOZZLE)
   #error "SINGLENOZZLE requires 2 or more EXTRUDERS."
+#endif
+
+/**
+ * Sanity checking for the Průša MK2 Multiplexer
+ */
+#ifdef SNMM
+  #error "SNMM is now MK2_MULTIPLEXER. Please update your configuration."
+#elif ENABLED(MK2_MULTIPLEXER) && DISABLED(ADVANCED_PAUSE_FEATURE)
+  #error "ADVANCED_PAUSE_FEATURE is required with MK2_MULTIPLEXER."
 #endif
 
 /**
