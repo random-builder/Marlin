@@ -989,8 +989,8 @@
 //#define EEPROM_SETTINGS
 
 #if ENABLED(EEPROM_SETTINGS)
-  // To disable EEPROM Serial responses and decrease program space by ~1700 byte: comment this out:
-  #define EEPROM_CHITCHAT // Please keep turned on if you can.
+  //#define DISABLE_M503  // Saves ~2700 bytes of PROGMEM. Disable for release!
+  #define EEPROM_CHITCHAT // Print a report on M500. Please keep turned on.
 #endif
 
 //
@@ -1398,6 +1398,11 @@
 //#define ANET_FULL_GRAPHICS_LCD  // Anet 128x64 full graphics lcd with rotary encoder as used on Anet A6
                                   // A clone of the RepRapDiscount full graphics display but with
                                   // different pins/wiring (see pins_ANET_10.h).
+
+//
+// LCD for Melzi Card with Graphical LCD
+//
+//#define LCD_FOR_MELZI
 
 //
 // CONTROLLER TYPE: I2C

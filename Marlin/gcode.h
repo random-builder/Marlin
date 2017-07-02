@@ -38,7 +38,7 @@
 #if ENABLED(DEBUG_GCODE_PARSER)
   #if ENABLED(AUTO_BED_LEVELING_UBL)
     extern char* hex_address(const void * const w);
-  #else  
+  #else
     #include "hex_print_routines.h"
   #endif
   #include "serial.h"
@@ -124,7 +124,7 @@ public:
         if (debug) {
           SERIAL_ECHOPAIR("Set bit ", (int)PARAM_BIT(ind));
           SERIAL_ECHOPAIR(" of index ", (int)PARAM_IND(ind));
-          SERIAL_ECHOLNPAIR(" | param = ", hex_address((void*)param[ind]));
+          SERIAL_ECHOLNPAIR(" | param = ", (int)param[ind]);
         }
       #endif
     }
@@ -144,10 +144,6 @@ public:
 
     #define SEEN_TEST(L) TEST(codebits[LETTER_IND(L)], LETTER_BIT(L))
 
-    // Seen any axis parameter
-    // Optimized by moving 'X' up to index 24
-    FORCE_INLINE bool seen_axis() { return codebits[3] || SEEN_TEST('E'); }
-
   #else // !FASTER_GCODE_PARSER
 
     // Code is found in the string. If not found, value_ptr is unchanged.
@@ -164,12 +160,12 @@ public:
 
     #define SEEN_TEST(L) !!strchr(command_args, L)
 
-    // Seen any axis parameter
-    static bool seen_axis() {
-      return SEEN_TEST('X') || SEEN_TEST('Y') || SEEN_TEST('Z') || SEEN_TEST('E');
-    }
-
   #endif // !FASTER_GCODE_PARSER
+
+  // Seen any axis parameter
+  static bool seen_axis() {
+    return SEEN_TEST('X') || SEEN_TEST('Y') || SEEN_TEST('Z') || SEEN_TEST('E');
+  }
 
   // Populate all fields by parsing a single line of GCode
   // This uses 54 bytes of SRAM to speed up seen/value
