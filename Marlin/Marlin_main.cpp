@@ -906,12 +906,6 @@ void setup_killpin() {
 
 #endif
 
-void setup_homepin(void) {
-  #if HAS_HOME
-    SET_INPUT_PULLUP(HOME_PIN);
-  #endif
-}
-
 void setup_powerhold() {
   #if HAS_SUICIDE
     OUT_WRITE(SUICIDE_PIN, HIGH);
@@ -2305,18 +2299,23 @@ static void clean_up_after_endstop_or_probe_move() {
    *   - Raise to the BETWEEN height
    * - Return the probed Z position
    */
-  float probe_pt(const float &x, const float &y, const bool stow/*=true*/, const int verbose_level/*=1*/) {
+  float probe_pt(const float &lx, const float &ly, const bool stow, const uint8_t verbose_level, const bool printable=true) {
     #if ENABLED(DEBUG_LEVELING_FEATURE)
       if (DEBUGGING(LEVELING)) {
-        SERIAL_ECHOPAIR(">>> probe_pt(", x);
-        SERIAL_ECHOPAIR(", ", y);
+        SERIAL_ECHOPAIR(">>> probe_pt(", lx);
+        SERIAL_ECHOPAIR(", ", ly);
         SERIAL_ECHOPAIR(", ", stow ? "" : "no ");
         SERIAL_ECHOLNPGM("stow)");
         DEBUG_POS("", current_position);
       }
     #endif
 
-    if (!position_is_reachable_by_probe_xy(x, y)) return NAN;
+    const float nx = lx - (X_PROBE_OFFSET_FROM_EXTRUDER), ny = ly - (Y_PROBE_OFFSET_FROM_EXTRUDER);
+
+    if (printable)
+      if (!position_is_reachable_by_probe_xy(lx, ly)) return NAN;
+    else
+      if (!position_is_reachable_xy(nx, ny)) return NAN;
 
     const float old_feedrate_mm_s = feedrate_mm_s;
 
@@ -2331,7 +2330,7 @@ static void clean_up_after_endstop_or_probe_move() {
     feedrate_mm_s = XY_PROBE_FEEDRATE_MM_S;
 
     // Move the probe to the given XY
-    do_blocking_move_to_xy(x - (X_PROBE_OFFSET_FROM_EXTRUDER), y - (Y_PROBE_OFFSET_FROM_EXTRUDER));
+    do_blocking_move_to_xy(nx, ny);
 
     if (DEPLOY_PROBE()) return NAN;
 
@@ -2344,9 +2343,9 @@ static void clean_up_after_endstop_or_probe_move() {
 
     if (verbose_level > 2) {
       SERIAL_PROTOCOLPGM("Bed X: ");
-      SERIAL_PROTOCOL_F(x, 3);
+      SERIAL_PROTOCOL_F(lx, 3);
       SERIAL_PROTOCOLPGM(" Y: ");
-      SERIAL_PROTOCOL_F(y, 3);
+      SERIAL_PROTOCOL_F(ly, 3);
       SERIAL_PROTOCOLPGM(" Z: ");
       SERIAL_PROTOCOL_F(measured_z, 3);
       SERIAL_EOL();
@@ -4234,10 +4233,14 @@ void home_all_axes() { gcode_G28(true); }
    *
    *  A  Abort current leveling procedure
    *
-   *  W  Write a mesh point. (Ignored during leveling.)
-   *  X  Required X for mesh point
-   *  Y  Required Y for mesh point
-   *  Z  Z for mesh point. Otherwise, current Z minus Z probe offset.
+   * Extra parameters with BILINEAR only:
+   *
+   *  W  Write a mesh point. (If G29 is idle.)
+   *  I  X index for mesh point
+   *  J  Y index for mesh point
+   *  X  X for mesh point, overrides I
+   *  Y  Y for mesh point, overrides J
+   *  Z  Z for mesh point. Otherwise, raw current Z.
    *
    * Without PROBE_MANUALLY:
    *
@@ -5138,7 +5141,7 @@ void home_all_axes() { gcode_G28(true); }
      *      P3     Probe all positions: center, towers and opposite towers. Set all.
      *      P4-P7  Probe all positions at different locations and average them.
      *
-     *   T   Don't calibrate tower angle corrections
+     *   T0  Don't calibrate tower angle corrections
      *
      *   Cn.nn Calibration precision; when omitted calibrates to maximum precision
      *
@@ -5187,7 +5190,7 @@ void home_all_axes() { gcode_G28(true); }
         return;
       }
 
-      const bool towers_set           = !parser.boolval('T'),
+      const bool towers_set           = parser.boolval('T', true),
                  stow_after_each      = parser.boolval('E'),
                  _1p_calibration      = probe_points == 1,
                  _4p_calibration      = probe_points == 2,
@@ -5200,20 +5203,6 @@ void home_all_axes() { gcode_G28(true); }
                  _7p_quadruple_circle = probe_points == 7,
                  _7p_multi_circle     = _7p_double_circle || _7p_triple_circle || _7p_quadruple_circle,
                  _7p_intermed_points  = _7p_calibration && !_7p_half_circle;
-
-      if (!_1p_calibration) {  // test if the outer radius is reachable
-        const float circles = (_7p_quadruple_circle ? 1.5 :
-                               _7p_triple_circle    ? 1.0 :
-                               _7p_double_circle    ? 0.5 : 0),
-                    radius = (1 + circles * 0.1) * delta_calibration_radius;
-        for (uint8_t axis = 1; axis < 13; ++axis) {
-          if (!position_is_reachable_xy(cos(RADIANS(180 + 30 * axis)) * radius, sin(RADIANS(180 + 30 * axis)) * radius)) {
-            SERIAL_PROTOCOLLNPGM("?(M665 B)ed radius is implausible.");
-            return;
-          }
-        }
-      }
-
       const static char save_message[] PROGMEM = "Save with M500 and/or copy to Configuration.h";
       const float dx = (X_PROBE_OFFSET_FROM_EXTRUDER),
                   dy = (Y_PROBE_OFFSET_FROM_EXTRUDER);
@@ -5232,6 +5221,19 @@ void home_all_axes() { gcode_G28(true); }
             alpha_old = delta_tower_angle_trim[A_AXIS],
             beta_old = delta_tower_angle_trim[B_AXIS];
 
+       if (!_1p_calibration) {  // test if the outer radius is reachable
+        const float circles = (_7p_quadruple_circle ? 1.5 :
+                               _7p_triple_circle    ? 1.0 :
+                               _7p_double_circle    ? 0.5 : 0),
+                    r = (1 + circles * 0.1) * delta_calibration_radius;
+        for (uint8_t axis = 1; axis < 13; ++axis) {
+          const float a = RADIANS(180 + 30 * axis);
+          if (!position_is_reachable_xy(cos(a) * r, sin(a) * r)) {
+            SERIAL_PROTOCOLLNPGM("?(M665 B)ed radius is implausible.");
+            return;
+          }
+        }
+      }
       SERIAL_PROTOCOLLNPGM("G33 Auto Calibrate");
 
       stepper.synchronize();
@@ -5271,13 +5273,11 @@ void home_all_axes() { gcode_G28(true); }
         SERIAL_EOL();
       }
 
-      home_offset[Z_AXIS] -= probe_pt(dx, dy, stow_after_each, 1); // 1st probe to set height
-      do_probe_raise(Z_CLEARANCE_BETWEEN_PROBES);
-
+      home_offset[Z_AXIS] -= probe_pt(dx, dy, stow_after_each, 1, false); // 1st probe to set height
+      
       do {
 
-        float z_at_pt[13] = { 0.0 }, S1 = 0.0, S2 = 0.0;
-        int16_t N = 0;
+        float z_at_pt[13] = { 0.0 };
 
         test_precision = zero_std_dev_old != 999.0 ? (zero_std_dev + zero_std_dev_old) / 2 : zero_std_dev;
 
@@ -5286,12 +5286,12 @@ void home_all_axes() { gcode_G28(true); }
         // Probe the points
 
         if (!_7p_half_circle && !_7p_triple_circle) { // probe the center
-          z_at_pt[0] += probe_pt(dx, dy, stow_after_each, 1);
+          z_at_pt[0] += probe_pt(dx, dy, stow_after_each, 1, false);
         }
         if (_7p_calibration) { // probe extra center points
           for (int8_t axis = _7p_multi_circle ? 11 : 9; axis > 0; axis -= _7p_multi_circle ? 2 : 4) {
             const float a = RADIANS(180 + 30 * axis), r = delta_calibration_radius * 0.1;
-            z_at_pt[0] += probe_pt(cos(a) * r + dx, sin(a) * r + dy, stow_after_each, 1);
+            z_at_pt[0] += probe_pt(cos(a) * r + dx, sin(a) * r + dy, stow_after_each, 1, false);
           }
           z_at_pt[0] /= float(_7p_double_circle ? 7 : probe_points);
         }
@@ -5307,19 +5307,19 @@ void home_all_axes() { gcode_G28(true); }
             for (float circles = -offset_circles ; circles <= offset_circles; circles++) {
               const float a = RADIANS(180 + 30 * axis),
                           r = delta_calibration_radius * (1 + circles * (zig_zag ? 0.1 : -0.1));
-              z_at_pt[axis] += probe_pt(cos(a) * r + dx, sin(a) * r + dy, stow_after_each, 1);
+              z_at_pt[axis] += probe_pt(cos(a) * r + dx, sin(a) * r + dy, stow_after_each, 1, false);
             }
             zig_zag = !zig_zag;
             z_at_pt[axis] /= (2 * offset_circles + 1);
           }
         }
         if (_7p_intermed_points) // average intermediates to tower and opposites
-          for (uint8_t axis = 1; axis <= 11; axis += 2)
+          for (uint8_t axis = 1; axis < 13; axis += 2)
             z_at_pt[axis] = (z_at_pt[axis] + (z_at_pt[axis + 1] + z_at_pt[(axis + 10) % 12 + 1]) / 2.0) / 2.0;
 
-        S1 += z_at_pt[0];
-        S2 += sq(z_at_pt[0]);
-        N++;
+        float S1 = z_at_pt[0],
+              S2 = sq(z_at_pt[0]);
+        int16_t N = 1;
         if (!_1p_calibration) // std dev from zero plane
           for (uint8_t axis = (_4p_opposite_points ? 3 : 1); axis < 13; axis += (_4p_calibration ? 4 : 2)) {
             S1 += z_at_pt[axis];
@@ -13008,7 +13008,9 @@ void setup() {
     OUT_WRITE(SOL1_PIN, LOW); // turn it off
   #endif
 
-  setup_homepin();
+  #if HAS_HOME
+    SET_INPUT_PULLUP(HOME_PIN);
+  #endif
 
   #if PIN_EXISTS(STAT_LED_RED)
     OUT_WRITE(STAT_LED_RED_PIN, LOW); // turn it off
@@ -13034,6 +13036,10 @@ void setup() {
   #endif
 
   lcd_init();
+
+  #ifndef CUSTOM_BOOTSCREEN_TIMEOUT
+    #define CUSTOM_BOOTSCREEN_TIMEOUT 2500
+  #endif
 
   #if ENABLED(SHOW_BOOTSCREEN)
     #if ENABLED(DOGLCD)                           // On DOGM the first bootscreen is already drawn
