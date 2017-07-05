@@ -97,6 +97,9 @@
   #elif ENABLED(DISPLAY_CHARSET_ISO10646_TR)
     #include "dogm_font_data_ISO10646_1_tr.h"
     #define FONT_MENU_NAME ISO10646_TR
+  #elif ENABLED(DISPLAY_CHARSET_ISO10646_CZ)
+    #include "dogm_font_data_ISO10646_CZ.h"
+    #define FONT_MENU_NAME ISO10646_CZ
   #else // fall-back
     #include "dogm_font_data_ISO10646_1.h"
     #define FONT_MENU_NAME ISO10646_1_5x7
@@ -423,6 +426,17 @@ FORCE_INLINE void _draw_axis_label(const AxisEnum axis, const char* const pstr, 
 inline void lcd_implementation_status_message(const bool blink) {
   #if ENABLED(STATUS_MESSAGE_SCROLLING)
     static bool last_blink = false;
+<<<<<<< HEAD
+    lcd_print_utf(lcd_status_message + status_scroll_pos);
+    const uint8_t slen = lcd_strlen(lcd_status_message);
+    if (slen > LCD_WIDTH) {
+      const bool new_blink = lcd_blink();
+      if (last_blink != new_blink) {
+        last_blink = new_blink;
+        // Skip any non-printing bytes
+        while (!PRINTABLE(lcd_status_message[status_scroll_pos])) status_scroll_pos++;
+        if (++status_scroll_pos > slen - LCD_WIDTH) status_scroll_pos = 0;
+=======
     const uint8_t slen = lcd_strlen(lcd_status_message);
     const char *stat = lcd_status_message + status_scroll_pos;
     if (slen <= LCD_WIDTH)
@@ -448,6 +462,7 @@ inline void lcd_implementation_status_message(const bool blink) {
         // Skip any non-printing bytes
         if (status_scroll_pos < slen) while (!PRINTABLE(lcd_status_message[status_scroll_pos])) status_scroll_pos++;
         if (++status_scroll_pos >= slen + 2) status_scroll_pos = 0;
+>>>>>>> bugfix-1.1.x
       }
     }
   #else
