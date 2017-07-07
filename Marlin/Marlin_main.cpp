@@ -2312,10 +2312,10 @@ static void clean_up_after_endstop_or_probe_move() {
 
     const float nx = lx - (X_PROBE_OFFSET_FROM_EXTRUDER), ny = ly - (Y_PROBE_OFFSET_FROM_EXTRUDER);
 
-    if (printable)
+    if (printable) {
       if (!position_is_reachable_by_probe_xy(lx, ly)) return NAN;
-    else
-      if (!position_is_reachable_xy(nx, ny)) return NAN;
+    }
+    else if (!position_is_reachable_xy(nx, ny)) return NAN;
 
     const float old_feedrate_mm_s = feedrate_mm_s;
 
@@ -4308,7 +4308,7 @@ void home_all_axes() { gcode_G28(true); }
       #endif
 
       ABL_VAR int left_probe_bed_position, right_probe_bed_position, front_probe_bed_position, back_probe_bed_position;
-      ABL_VAR float xGridSpacing, yGridSpacing;
+      ABL_VAR float xGridSpacing = 0, yGridSpacing = 0;
 
       #if ENABLED(AUTO_BED_LEVELING_LINEAR)
         ABL_VAR uint8_t abl_grid_points_x = GRID_MAX_POINTS_X,
@@ -5280,7 +5280,7 @@ void home_all_axes() { gcode_G28(true); }
       #if DISABLED(PROBE_MANUALLY)
         home_offset[Z_AXIS] -= probe_pt(dx, dy, stow_after_each, 1, false); // 1st probe to set height
       #endif
-      
+
       do {
 
         float z_at_pt[13] = { 0.0 };
@@ -5380,7 +5380,7 @@ void home_all_axes() { gcode_G28(true); }
           #if ENABLED(PROBE_MANUALLY)
             test_precision = 0.00; // forced end
           #endif
-          
+
           switch (probe_points) {
             case 1:
               test_precision = 0.00; // forced end
@@ -5854,7 +5854,7 @@ inline void gcode_G92() {
         WRITE(SPINDLE_LASER_ENABLE_PIN, !SPINDLE_LASER_ENABLE_INVERT);  // turn spindle off
         delay_for_power_down();
       }
-      digitalWrite(SPINDLE_DIR_PIN, rotation_dir);
+      WRITE(SPINDLE_DIR_PIN, rotation_dir);
     #endif
 
     /**
@@ -6256,7 +6256,11 @@ inline void gcode_M17() {
   /**
    * M23: Open a file
    */
-  inline void gcode_M23() { card.openFile(parser.string_arg, true); }
+  inline void gcode_M23() {
+    // Simplify3D includes the size, so zero out all spaces (#7227)
+    for (char *fn = parser.string_arg; *fn; ++fn) if (*fn == ' ') *fn = '\0';
+    card.openFile(parser.string_arg, true);
+  }
 
   /**
    * M24: Start or Resume SD Print
@@ -6470,20 +6474,20 @@ inline void gcode_M42() {
       else {
         report_pin_state_extended(pin, I_flag, true, "Pulsing   ");
         #if AVR_AT90USB1286_FAMILY // Teensy IDEs don't know about these pins so must use FASTIO
-          if (pin == 46) {
-            SET_OUTPUT(46);
+          if (pin == TEENSY_E2) {
+            SET_OUTPUT(TEENSY_E2);
             for (int16_t j = 0; j < repeat; j++) {
-              WRITE(46, 0); safe_delay(wait);
-              WRITE(46, 1); safe_delay(wait);
-              WRITE(46, 0); safe_delay(wait);
+              WRITE(TEENSY_E2, LOW);  safe_delay(wait);
+              WRITE(TEENSY_E2, HIGH); safe_delay(wait);
+              WRITE(TEENSY_E2, LOW);  safe_delay(wait);
             }
           }
-          else if (pin == 47) {
-            SET_OUTPUT(47);
+          else if (pin == TEENSY_E3) {
+            SET_OUTPUT(TEENSY_E3);
             for (int16_t j = 0; j < repeat; j++) {
-              WRITE(47, 0); safe_delay(wait);
-              WRITE(47, 1); safe_delay(wait);
-              WRITE(47, 0); safe_delay(wait);
+              WRITE(TEENSY_E3, LOW);  safe_delay(wait);
+              WRITE(TEENSY_E3, HIGH); safe_delay(wait);
+              WRITE(TEENSY_E3, LOW);  safe_delay(wait);
             }
           }
           else
@@ -6565,10 +6569,10 @@ inline void gcode_M42() {
       for (uint8_t i = 0; i < 4; i++) {
         servo[probe_index].move(z_servo_angle[0]); //deploy
         safe_delay(500);
-        deploy_state = digitalRead(PROBE_TEST_PIN);
+        deploy_state = READ(PROBE_TEST_PIN);
         servo[probe_index].move(z_servo_angle[1]); //stow
         safe_delay(500);
-        stow_state = digitalRead(PROBE_TEST_PIN);
+        stow_state = READ(PROBE_TEST_PIN);
       }
       if (probe_inverting != deploy_state) SERIAL_PROTOCOLLNPGM("WARNING - INVERTING setting probably backwards");
 
@@ -6603,9 +6607,9 @@ inline void gcode_M42() {
           if (0 == j % (500 * 1)) // keep cmd_timeout happy
             refresh_cmd_timeout();
 
-          if (deploy_state != digitalRead(PROBE_TEST_PIN)) { // probe triggered
+          if (deploy_state != READ(PROBE_TEST_PIN)) { // probe triggered
 
-            for (probe_counter = 1; probe_counter < 50 && deploy_state != digitalRead(PROBE_TEST_PIN); ++probe_counter)
+            for (probe_counter = 1; probe_counter < 50 && deploy_state != READ(PROBE_TEST_PIN); ++probe_counter)
               safe_delay(2);
 
             if (probe_counter == 50)
@@ -6667,7 +6671,7 @@ inline void gcode_M42() {
     if (parser.seen('E')) {
       endstop_monitor_flag = parser.value_bool();
       SERIAL_PROTOCOLPGM("endstop monitor ");
-      SERIAL_PROTOCOL(endstop_monitor_flag ? "en" : "dis");
+      serialprintPGM(endstop_monitor_flag ? PSTR("en") : PSTR("dis"));
       SERIAL_PROTOCOLLNPGM("abled");
       return;
     }
@@ -7077,6 +7081,10 @@ inline void gcode_M104() {
     #endif
     const int8_t e=-2
   ) {
+    #if !(HAS_TEMP_BED && HAS_TEMP_HOTEND) && HOTENDS <= 1
+      UNUSED(e);
+    #endif
+
     SERIAL_PROTOCOLCHAR(' ');
     SERIAL_PROTOCOLCHAR(
       #if HAS_TEMP_BED && HAS_TEMP_HOTEND
@@ -7298,7 +7306,9 @@ inline void gcode_M109() {
   wait_for_heatup = true;
   millis_t now, next_temp_ms = 0, next_cool_check_ms = 0;
 
-  KEEPALIVE_STATE(NOT_BUSY);
+  #if DISABLED(BUSY_WHILE_HEATING)
+    KEEPALIVE_STATE(NOT_BUSY);
+  #endif
 
   #if ENABLED(PRINTER_EVENT_LEDS)
     const float start_temp = thermalManager.degHotend(target_extruder);
@@ -7381,7 +7391,9 @@ inline void gcode_M109() {
     #endif
   }
 
-  KEEPALIVE_STATE(IN_HANDLER);
+  #if DISABLED(BUSY_WHILE_HEATING)
+    KEEPALIVE_STATE(IN_HANDLER);
+  #endif
 }
 
 #if HAS_TEMP_BED
@@ -7425,7 +7437,9 @@ inline void gcode_M109() {
     wait_for_heatup = true;
     millis_t now, next_temp_ms = 0, next_cool_check_ms = 0;
 
-    KEEPALIVE_STATE(NOT_BUSY);
+    #if DISABLED(BUSY_WHILE_HEATING)
+      KEEPALIVE_STATE(NOT_BUSY);
+    #endif
 
     target_extruder = active_extruder; // for print_heaterstates
 
@@ -7500,7 +7514,9 @@ inline void gcode_M109() {
     } while (wait_for_heatup && TEMP_BED_CONDITIONS);
 
     if (wait_for_heatup) LCD_MESSAGEPGM(MSG_BED_DONE);
-    KEEPALIVE_STATE(IN_HANDLER);
+    #if DISABLED(BUSY_WHILE_HEATING)
+      KEEPALIVE_STATE(IN_HANDLER);
+    #endif
   }
 
 #endif // HAS_TEMP_BED
@@ -8814,11 +8830,15 @@ inline void gcode_M303() {
     if (WITHIN(e, 0, HOTENDS - 1))
       target_extruder = e;
 
-    KEEPALIVE_STATE(NOT_BUSY); // don't send "busy: processing" messages during autotune output
+    #if DISABLED(BUSY_WHILE_HEATING)
+      KEEPALIVE_STATE(NOT_BUSY);
+    #endif
 
     thermalManager.PID_autotune(temp, e, c, u);
 
-    KEEPALIVE_STATE(IN_HANDLER);
+    #if DISABLED(BUSY_WHILE_HEATING)
+      KEEPALIVE_STATE(IN_HANDLER);
+    #endif
   #else
     SERIAL_ERROR_START();
     SERIAL_ERRORLNPGM(MSG_ERR_M303_DISABLED);
@@ -9860,9 +9880,9 @@ inline void gcode_M907() {
       if (USEABLE_HARDWARE_PWM(CASE_LIGHT_PIN)) {
         analogWrite(CASE_LIGHT_PIN, INVERT_CASE_LIGHT ? 255 - case_light_brightness : case_light_brightness );
       }
-      else digitalWrite(CASE_LIGHT_PIN, INVERT_CASE_LIGHT ? LOW : HIGH );
+      else WRITE(CASE_LIGHT_PIN, INVERT_CASE_LIGHT ? LOW : HIGH);
     }
-    else digitalWrite(CASE_LIGHT_PIN, INVERT_CASE_LIGHT ? HIGH : LOW);
+    else WRITE(CASE_LIGHT_PIN, INVERT_CASE_LIGHT ? HIGH : LOW);
   }
 #endif // HAS_CASE_LIGHT
 
@@ -10524,8 +10544,8 @@ void process_next_command() {
 
       #if ENABLED(G38_PROBE_TARGET)
         case 38: // G38.2 & G38.3
-          if (subcode == 2 || subcode == 3)
-            gcode_G38(subcode == 2);
+          if (parser.subcode == 2 || parser.subcode == 3)
+            gcode_G38(parser.subcode == 2);
           break;
       #endif
 
@@ -12719,13 +12739,13 @@ void manage_inactivity(bool ignore_stepper_queue/*=false*/) {
   #if ENABLED(EXTRUDER_RUNOUT_PREVENT)
     if (ELAPSED(ms, previous_cmd_ms + (EXTRUDER_RUNOUT_SECONDS) * 1000UL)
       && thermalManager.degHotend(active_extruder) > EXTRUDER_RUNOUT_MINTEMP) {
-      bool oldstatus;
       #if ENABLED(SWITCHING_EXTRUDER)
-        oldstatus = E0_ENABLE_READ;
+        const bool oldstatus = E0_ENABLE_READ;
         enable_E0();
       #else // !SWITCHING_EXTRUDER
+        bool oldstatus;
         switch (active_extruder) {
-          case 0: oldstatus = E0_ENABLE_READ; enable_E0(); break;
+          default: oldstatus = E0_ENABLE_READ; enable_E0(); break;
           #if E_STEPPERS > 1
             case 1: oldstatus = E1_ENABLE_READ; enable_E1(); break;
             #if E_STEPPERS > 2
@@ -12861,7 +12881,7 @@ void kill(const char* lcd_msg) {
   #if defined(ACTION_ON_KILL)
     SERIAL_ECHOLNPGM("//action:" ACTION_ON_KILL);
   #endif
-  
+
   #if HAS_POWER_SWITCH
     SET_INPUT(PS_ON_PIN);
   #endif
