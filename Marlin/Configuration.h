@@ -942,7 +942,7 @@
   //===========================================================================
 
   #define UBL_MESH_INSET 0          // Mesh inset margin on print area
-  #define GRID_MAX_POINTS_X 5      // Don't use more than 15 points per axis, implementation limited.
+  #define GRID_MAX_POINTS_X 7      // Don't use more than 15 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   #define UBL_PROBE_PT_1_X 35       // Probing points for 3-Point leveling of the mesh
