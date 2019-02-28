@@ -89,8 +89,9 @@
 //#define TEMP_0_PIN          1   // A1 (TH2)
 //#define TEMP_1_PIN          2   // A2 (TH3)
 //#define TEMP_2_PIN          3   // A3 (TH4)
-#define TEMP_0_PIN            4   // A4: pt100_e3d -> P1_30 
-#define TEMP_1_PIN            5   // A5: pt100_e3d -> P1_31 
+#define TEMP_BED_PIN        0   // A0 (TH1)
+#define TEMP_0_PIN          4   // A4: pt100_e3d -> P1_30 
+#define TEMP_1_PIN          5   // A5: pt100_e3d -> P1_31 
 
 //
 // Heaters / Fans
@@ -214,13 +215,14 @@
     // When sharing the SD card with a PC we want the menu options to
     // mount/unmount the card and refresh it. So we disable card detect.
     #define SHARED_SD_CARD
-  #else
-    #define SD_DETECT_PIN  P0_27
+    #undef SD_DETECT_PIN           // redefine detect pin onboard tf card
+    #define SD_DETECT_PIN  P0_27   // (57) open-drain
   #endif
+
   #define SCK_PIN          P0_07
   #define MISO_PIN         P0_08
   #define MOSI_PIN         P0_09
-  #define SS_PIN           P0_06   // Chip select for SD card used by Marlin
+  #define SS_PIN           P0_16   // Chip select for SD card used by Marlin
   #define ONBOARD_SD_CS    P0_06   // Chip select for "System" SD card
 
 #endif
