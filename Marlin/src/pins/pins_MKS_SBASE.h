@@ -90,7 +90,7 @@
 //#define TEMP_1_PIN          2   // A2 (TH3)
 //#define TEMP_2_PIN          3   // A3 (TH4)
 // 
-// custom analog inputs for aplified rtd sensors
+// custom analog inputs for amplified rtd sensors
 // 
 #define TEMP_0_PIN          4   // A4: heater1-> pt100_e3d -> P1_30 
 #define TEMP_1_PIN          5   // A5: heater2-> pt100_e3d -> P1_31 
