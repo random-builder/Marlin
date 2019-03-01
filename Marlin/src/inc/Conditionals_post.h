@@ -43,6 +43,16 @@
   #define NOT_A_PIN 0 // For PINS_DEBUGGING
 #endif
 
+#if EXTRUDERS == 0
+  #define NO_VOLUMETRICS
+  #undef FWRETRACT
+  #undef LIN_ADVANCE
+  #undef ADVANCED_PAUSE_FEATURE
+  #undef DISABLE_INACTIVE_EXTRUDER
+  #undef EXTRUDER_RUNOUT_PREVENT
+  #undef FILAMENT_LOAD_UNLOAD_GCODES
+#endif
+
 #define HAS_CLASSIC_JERK (IS_KINEMATIC || DISABLED(JUNCTION_DEVIATION))
 
 /**
@@ -725,12 +735,12 @@
 // Is an endstop plug used for the Z2 endstop or the bed probe?
 #define IS_Z2_OR_PROBE(A,M) ( \
      (Z_MULTI_ENDSTOPS && Z2_USE_ENDSTOP == _##A##M##_) \
-  || (ENABLED(Z_MIN_PROBE_ENDSTOP) && Z_MIN_PROBE_PIN == A##_##M##_PIN ) )
+  || (USES_Z_MIN_PROBE_ENDSTOP && Z_MIN_PROBE_PIN == A##_##M##_PIN ) )
 
 // Is an endstop plug used for the Z3 endstop or the bed probe?
 #define IS_Z3_OR_PROBE(A,M) ( \
      (ENABLED(Z_TRIPLE_ENDSTOPS) && Z3_USE_ENDSTOP == _##A##M##_) \
-  || (ENABLED(Z_MIN_PROBE_ENDSTOP) && Z_MIN_PROBE_PIN == A##_##M##_PIN ) )
+  || (USES_Z_MIN_PROBE_ENDSTOP && Z_MIN_PROBE_PIN == A##_##M##_PIN ) )
 
 /**
  * Set ENDSTOPPULLUPS for active endstop switches
@@ -894,7 +904,7 @@
 #define HAS_Z2_MAX (PIN_EXISTS(Z2_MAX))
 #define HAS_Z3_MIN (PIN_EXISTS(Z3_MIN))
 #define HAS_Z3_MAX (PIN_EXISTS(Z3_MAX))
-#define HAS_Z_MIN_PROBE_PIN (PIN_EXISTS(Z_MIN_PROBE))
+#define HAS_Z_MIN_PROBE_PIN (USES_Z_MIN_PROBE_ENDSTOP && PIN_EXISTS(Z_MIN_PROBE))
 #define HAS_CALIBRATION_PIN (PIN_EXISTS(CALIBRATION))
 
 // ADC Temp Sensors (Thermistor or Thermocouple with amplifier ADC interface)
