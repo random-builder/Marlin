@@ -137,7 +137,7 @@
 
 // Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
-#define CUSTOM_MACHINE_NAME "Wanhao-D6"
+#define CUSTOM_MACHINE_NAME "Wanhao-D6/2019-03-02"
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
@@ -676,7 +676,7 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 300, 300, 25, 50, 50 }
+#define DEFAULT_MAX_FEEDRATE          { 500, 500, 25, 50, 50 }
 
 /**
  * Default Max Acceleration (change/s) change = mm/s
@@ -684,7 +684,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 3000, 3000, 100, 10000, 10000 }
+#define DEFAULT_MAX_ACCELERATION      { 9000, 9000, 100, 10000, 10000 }
 
 /**
  * Default Acceleration (change/s) change = mm/s
@@ -703,7 +703,7 @@
 //
 #define JUNCTION_DEVIATION
 #if ENABLED(JUNCTION_DEVIATION)
-  #define JUNCTION_DEVIATION_MM 0.02  // (mm) Distance from real junction edge
+  #define JUNCTION_DEVIATION_MM 0.05  // (mm) Distance from real junction edge
 #endif
 
 /**
