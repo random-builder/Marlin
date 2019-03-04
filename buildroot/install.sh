@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# marlin firmware updater
+# mks firmware updater via local usb disk
 
 set -e
 
@@ -9,9 +9,6 @@ readonly label="MKS-BASE"
 
 # sd-card mount folder
 readonly point="/tmp/$label"
-
-# firmware source
-#readonly firmware_url="https://github.com/Smoothieware/Smoothieware/raw/edge/FirmwareBin/firmware-latest.bin"
 
 # firmware target file
 readonly firmware_file="firmware.bin"
@@ -63,12 +60,6 @@ disk_umount
 echo "# erase target"
 mkdir -p "$folder/target"
 rm -r -f "$folder/target"/*
-
-#echo "# fetch firmware"
-#wget -q "$firmware_url" -O "$folder/target/$firmware_file"
-
-#echo "# copy config"
-#cp -a -r -f "$folder/source"/*.txt "$folder/target"/
 
 echo "# copy firmware"
 cp -a -f "$folder/firmware.bin" "$folder/target"/
