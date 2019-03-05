@@ -42,10 +42,10 @@
 //
 // Servo pin
 //
-#define SERVO0_PIN         P2_11
+//#define SERVO0_PIN         P2_11
 #define SERVO1_PIN         P2_11
 #define SERVO2_PIN         P2_12
-#define SERVO3_PIN         P2_12
+//#define SERVO3_PIN         P2_12
 
 //
 // Limit Switches - Not Interrupt Capable
