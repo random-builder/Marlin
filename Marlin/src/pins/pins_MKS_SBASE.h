@@ -37,14 +37,17 @@
 #define LED4_PIN           P1_21
 
 // Case light
-#define CASE_LIGHT_PIN P3_26
+#define CASE_LIGHT_PIN     P3_26
+
+// BLTouch signal
+# define BLTOUCH_PIN       P1_22
 
 //
 // Servo pin
 //
-//#define SERVO0_PIN         P2_11
-#define SERVO1_PIN         P2_11
-#define SERVO2_PIN         P2_12
+#define SERVO0_PIN         P1_23 // BLTouch control
+#define SERVO1_PIN         P2_11 // case light
+#define SERVO2_PIN         P2_12 // 
 //#define SERVO3_PIN         P2_12
 
 //
