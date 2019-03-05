@@ -13,7 +13,7 @@ HOST="octopi2"
 
 # marlin board aaccess
 PORT="/dev/ttyACM0"
-RATE="115200" # does not affect usb sped
+RATE="115200" # does not affect usb speed
 
 # location of this script
 PATH_LOC="$location"
