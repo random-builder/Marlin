@@ -36,6 +36,9 @@
 #define LED3_PIN           P1_20
 #define LED4_PIN           P1_21
 
+// Case light
+#define CASE_LIGHT_PIN P3_26
+
 //
 // Servo pin
 //
