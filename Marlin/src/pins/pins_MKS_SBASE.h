@@ -32,9 +32,9 @@
 #define BOARD_WEBSITE_URL "https://github.com/makerbase-mks/MKS-SBASE"
 
 #define LED_PIN            P1_18   // Used as a status indicator
-#define LED2_PIN           P1_19
-#define LED3_PIN           P1_20
-#define LED4_PIN           P1_21
+#define LED2_PIN           P1_19   // wire to EXP1#3
+#define LED3_PIN           P1_20   // wire to EXP1#4
+#define LED4_PIN           P1_21   // wire to EXP1#5
 
 // Case light PWM
 #define CASE_LIGHT_PIN     P3_26
