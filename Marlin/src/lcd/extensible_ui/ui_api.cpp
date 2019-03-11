@@ -569,7 +569,7 @@ namespace ExtUI {
   #endif
 
   uint8_t getProgress_percent() {
-    return IFSD(card.percentDone(), 0);
+    return ui.get_progress();
   }
 
   uint32_t getProgress_seconds_elapsed() {
@@ -628,6 +628,12 @@ namespace ExtUI {
 
   void setFeedrate_percent(const float value) {
     feedrate_percentage = clamp(value, 10, 500);
+  }
+
+  void setUserConfirmed(void) {
+    #if HAS_RESUME_CONTINUE
+      wait_for_user = false;
+    #endif
   }
 
   void printFile(const char *filename) {

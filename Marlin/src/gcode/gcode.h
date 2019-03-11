@@ -415,7 +415,7 @@ private:
   #endif
 
   #if ENABLED(G38_PROBE_TARGET)
-    static void G38(const bool is_38_2);
+    static void G38(const int8_t subcode);
   #endif
 
   #if HAS_MESH
@@ -574,6 +574,11 @@ private:
   #if HAS_HEATED_BED
     static void M140();
     static void M190();
+  #endif
+
+  #if HAS_HEATED_CHAMBER
+    static void M141();
+    //static void M191();
   #endif
 
   #if HAS_LCD_MENU

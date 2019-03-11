@@ -258,9 +258,14 @@ void GcodeSuite::process_parsed_command(
       #endif
 
       #if ENABLED(G38_PROBE_TARGET)
-        case 38:                                                  // G38.2 & G38.3: Probe towards target
-          if (parser.subcode == 2 || parser.subcode == 3)
-            G38(parser.subcode == 2);
+        case 38:                                                  // G38.2, G38.3: Probe towards target
+          if (WITHIN(parser.subcode, 2,
+            #if ENABLED(G38_PROBE_AWAY)
+              5
+            #else
+              3
+            #endif
+          )) G38(parser.subcode);                                 // G38.4, G38.5: Probe away from target
           break;
       #endif
 
@@ -390,6 +395,11 @@ void GcodeSuite::process_parsed_command(
       #if HAS_HEATED_BED
         case 140: M140(); break;                                  // M140: Set bed temperature
         case 190: M190(); break;                                  // M190: Wait for bed temperature to reach target
+      #endif
+
+      #if HAS_HEATED_CHAMBER
+        case 141: M141(); break;                                  // M141: Set chamber temperature
+        //case 191: M191(); break;                                // M191: Wait for chamber temperature to reach target
       #endif
 
       case 105: M105(); KEEPALIVE_STATE(NOT_BUSY); return;        // M105: Report Temperatures (and say "ok")
