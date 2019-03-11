@@ -100,6 +100,10 @@
 // 
 #define TEMP_0_PIN          4   // A4: heater1-> pt100_e3d -> P1_30 
 #define TEMP_1_PIN          5   // A5: heater2-> pt100_e3d -> P1_31 
+//
+// thermistor sensor for enclosusre heater
+//
+#define TEMP_CHAMBER_PIN    1   // A1 (TH2)
 
 //
 // Heaters / Fans
@@ -110,6 +114,10 @@
 #ifndef FAN_PIN
   #define FAN_PIN          P2_04
 #endif
+//
+// Chamber heater PWM
+//
+#define HEATER_CHAMBER_PIN    P3_25
 
 //
 // Connector J7
