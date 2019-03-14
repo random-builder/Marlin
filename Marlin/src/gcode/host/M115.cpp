@@ -171,5 +171,6 @@ void GcodeSuite::M115() {
       #endif
     );
 
+
   #endif // EXTENDED_CAPABILITIES_REPORT
 }
