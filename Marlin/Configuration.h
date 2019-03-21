@@ -375,8 +375,8 @@
 #define TEMP_SENSOR_3 0
 #define TEMP_SENSOR_4 0
 #define TEMP_SENSOR_5 0
-#define TEMP_SENSOR_BED 4     // 10k thermistor
-#define TEMP_SENSOR_CHAMBER 4 // 10k thermistor
+#define TEMP_SENSOR_BED 1     // 100k thermistor
+#define TEMP_SENSOR_CHAMBER 1 // 100k thermistor
 #define CHAMBER_HEATER_PIN  HEATER_CHAMBER_PIN // On/off pin for enclosure heating system
 
 // Dummy thermistor constant temperature readings, for use with 998 and 999
