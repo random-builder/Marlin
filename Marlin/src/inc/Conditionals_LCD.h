@@ -452,7 +452,7 @@
   #ifndef NUM_SERVOS
     #define NUM_SERVOS (Z_PROBE_SERVO_NR + 1)
   #endif
-//  #undef DEACTIVATE_SERVOS_AFTER_MOVE // see #13368
+  #undef DEACTIVATE_SERVOS_AFTER_MOVE // see #13368
   #if NUM_SERVOS == 1
     #undef SERVO_DELAY
     #define SERVO_DELAY { 50 }

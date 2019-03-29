@@ -2085,10 +2085,10 @@
 // Delay (in milliseconds) before the next move will start, to give the servo time to reach its target angle.
 // 300ms is a good value but you can try less delay.
 // If the servo can't reach the requested position, increase it.
-#define SERVO_DELAY { 300,300,300,300 }
+#define SERVO_DELAY { 300, 300, 300, 300 }
 
 // Only power servos during movement, otherwise leave off to prevent jitter
-#define DEACTIVATE_SERVOS_AFTER_MOVE
+//#define DEACTIVATE_SERVOS_AFTER_MOVE // see #13368
 
 // Allow servo angle to be edited and saved to EEPROM
-#define EDITABLE_SERVO_ANGLES
+//#define EDITABLE_SERVO_ANGLES
