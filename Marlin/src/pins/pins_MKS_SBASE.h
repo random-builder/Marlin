@@ -24,6 +24,19 @@
  * MKS SBASE pin assignments
  */
 
+// see https://github.com/p3p/pio-framework-arduino-lpc176x
+
+// 8 ADC channels: P0_02, P0_03, P0_23, P0_24, P0_25, P0_26, P1_30, P1_31
+ 
+// H/W PWM
+// Hardware channel   Attached pins
+// 1   P1_18, P2_00
+// 2   P1_20, P2_01, P3_25
+// 3   P1_21, P2_02, P3_26
+// 4   P1_23, P2_03
+// 5   P1_24, P2_04
+// 6   P1_26, P2_05
+
 #ifndef TARGET_LPC1768
   #error "Oops! Make sure you have the LPC1768 environment selected in your IDE."
 #endif
@@ -31,38 +44,38 @@
 #define BOARD_NAME        "MKS SBASE"
 #define BOARD_WEBSITE_URL "https://github.com/makerbase-mks/MKS-SBASE"
 
-#define LED_PIN            P1_18   // Used as a status indicator
-#define LED2_PIN           P1_19   // wire to EXP1#3
-#define LED3_PIN           P1_20   // wire to EXP1#4
-#define LED4_PIN           P1_21   // wire to EXP1#5
+#define LED_PIN            P1_18   // Status indicator; h/w pwm channel #1 
+#define LED2_PIN           P1_19   // wired to EXP1#3
+#define LED3_PIN           P1_20   // wired to EXP1#4; h/w pwm channel #2
+#define LED4_PIN           P1_21   // wired to EXP1#5; h/w pwm channel #3
 
 // Case light PWM
-#define CASE_LIGHT_PIN     P3_26
+#define CASE_LIGHT_PIN     P0_15   // s/w pwm "PWM1"
 
-// BLTouch trigger signal
-# define BLTOUCH_PIN       P1_22
+// BLTouch trigger signal "BL/S"
+# define BLTOUCH_PIN       P1_22   // input
 
 //
 // Servo pin
 //
-#define SERVO0_PIN         P1_23 // BLTouch control PWM
-#define SERVO1_PIN         P2_11 // hotend cleaner PWM
-#define SERVO2_PIN         P2_12 // 
-//#define SERVO3_PIN         P2_12
+#define SERVO0_PIN         P4_28 // BLTouch control signal "BL/PWM"; s/w pwm
+#define SERVO1_PIN         P3_25 // "SRV1"; h/w pwm channel #2
+#define SERVO2_PIN         P3_26 // "SRV2"; h/w pwm channel #3
+#define SERVO3_PIN         P1_23 // TODO;   h/w pwm channel #4
 
 //
 // Limit Switches - Not Interrupt Capable
 //
-#define X_MIN_PIN          P1_24   // 10k pullup to 3.3V, 1K series
+#define X_MIN_PIN          P1_24   // 10k pullup to 3.3V, 1K series // h/w pwm channel #5
 #define X_MAX_PIN          P1_25   // 10k pullup to 3.3V, 1K series
-#define Y_MIN_PIN          P1_26   // 10k pullup to 3.3V, 1K series
+#define Y_MIN_PIN          P1_26   // 10k pullup to 3.3V, 1K series // h/w pwm channel #6
 #define Y_MAX_PIN          P1_27   // 10k pullup to 3.3V, 1K series
-#define Z_MIN_PIN          P1_28   // The original Mks Sbase DIO19 has a 10k pullup to 3.3V or 5V, 1K series, so when using a Zprobe we must use DIO41 (J8 P1.22)
+#define Z_MIN_PIN          P1_28   // 10k pullup to 3.3V, 1K series
 #define Z_MAX_PIN          P1_29   // 10k pullup to 3.3V, 1K series
 
-#ifndef Z_MIN_PROBE_PIN
-  #define Z_MIN_PROBE_PIN  P4_28   // Connector J8
-#endif
+//#ifndef Z_MIN_PROBE_PIN
+//  #define Z_MIN_PROBE_PIN  P4_28   // Connector J8
+//#endif
 
 //
 // Steppers
@@ -106,18 +119,16 @@
 #define TEMP_CHAMBER_PIN    1   // A1 (TH2)
 
 //
-// Heaters / Fans
+// Heaters / Fans PWM
 //
-#define HEATER_BED_PIN     P2_05
-#define HEATER_0_PIN       P2_07
-#define HEATER_1_PIN       P2_06
-#ifndef FAN_PIN
-  #define FAN_PIN          P2_04
-#endif
+#define HEATER_BED_PIN     P2_05  // h/w pwm channel #6
+#define HEATER_0_PIN       P2_07  // s/w pwm
+#define HEATER_1_PIN       P2_06  // s/w pwm
+#define FAN_PIN            P2_04  // h/w pwm channel #5
 //
 // Chamber heater PWM
 //
-#define HEATER_CHAMBER_PIN    P3_25
+#define HEATER_CHAMBER_PIN    P0_17 // s/w pwm "PWM2"
 
 //
 // Connector J7
@@ -128,50 +139,50 @@
 // 5V
 // NC
 // GND
-#define PIN_P0_17          P0_17
-#define PIN_P0_16          P0_16
-#define PIN_P0_15          P0_15
+//#define PIN_P0_17          P0_17
+//#define PIN_P0_16          P0_16
+//#define PIN_P0_15          P0_15
 
 //
 // Connector J8
 //
 
 // GND
-#define PIN_P1_22          P1_22
-#define PIN_P1_23          P1_23   // PWM Capable
-#define PIN_P2_12          P2_12   // Interrupt Capable
-#define PIN_P2_11          P2_11   // Interrupt Capable
+//#define PIN_P1_22          P1_22
+//#define PIN_P1_23          P1_23   // PWM Capable
+//#define PIN_P2_12          P2_12   // Interrupt Capable
+//#define PIN_P2_11          P2_11   // Interrupt Capable
 
 //
 // Průša i3 MK2 Multi Material Multiplexer Support
 //
-#if ENABLED(MK2_MULTIPLEXER)
-  #define E_MUX0_PIN       P1_23   // J8-3
-  #define E_MUX1_PIN       P2_12   // J8-4
-  #define E_MUX2_PIN       P2_11   // J8-5
-#endif
+//#if ENABLED(MK2_MULTIPLEXER)
+//  #define E_MUX0_PIN       P1_23   // J8-3
+//  #define E_MUX1_PIN       P2_12   // J8-4
+//  #define E_MUX2_PIN       P2_11   // J8-5
+//#endif
 
 //
 // Misc. Functions
 //
-#define PS_ON_PIN          P0_25   // TH3 Connector
+// #define PS_ON_PIN          P0_25   // TH3 Connector
 
 //
 // Ethernet pins
 //
-#ifndef ULTIPANEL
-  #define ENET_MDIO        P1_17   // J12-4
-  #define ENET_RX_ER       P1_14   // J12-6
-  #define ENET_RXD1        P1_10   // J12-8
-#endif
-
-#define ENET_MOC           P1_16   // J12-3
-#define REF_CLK            P1_15   // J12-5
-#define ENET_RXD0          P1_09   // J12-7
-#define ENET_CRS           P1_08   // J12-9
-#define ENET_TX_EN         P1_04   // J12-10
-#define ENET_TXD0          P1_00   // J12-11
-#define ENET_TXD1          P1_01   // J12-12
+//#ifndef ULTIPANEL
+//  #define ENET_MDIO        P1_17   // J12-4
+//  #define ENET_RX_ER       P1_14   // J12-6
+//  #define ENET_RXD1        P1_10   // J12-8
+//#endif
+//
+//#define ENET_MOC           P1_16   // J12-3
+//#define REF_CLK            P1_15   // J12-5
+//#define ENET_RXD0          P1_09   // J12-7
+//#define ENET_CRS           P1_08   // J12-9
+//#define ENET_TX_EN         P1_04   // J12-10
+//#define ENET_TXD0          P1_00   // J12-11
+//#define ENET_TXD1          P1_01   // J12-12
 
 /**
  * The SBase can share the on-board SD card with a PC via USB the following
@@ -255,20 +266,20 @@
  * that the garbage/lines are erased immediately after the SD card accesses are completed.
  */
 
-#if ENABLED(ULTRA_LCD)
-  #define BEEPER_PIN       P1_31   // EXP1.1
-  #define BTN_ENC          P1_30   // EXP1.2
-  #define BTN_EN1          P3_26   // EXP2.5
-  #define BTN_EN2          P3_25   // EXP2.3
-  #define LCD_PINS_RS      P0_16   // EXP1.4
-  #define LCD_SDSS         P0_28   // EXP2.4
-  #define LCD_PINS_ENABLE  P0_18   // EXP1.3
-  #define LCD_PINS_D4      P0_15   // EXP1.5
-  #if ANY(VIKI2, miniVIKI)
-    #define DOGLCD_SCK     SCK_PIN
-    #define DOGLCD_MOSI    MOSI_PIN
-  #endif
-#endif
+//#if ENABLED(ULTRA_LCD)
+//  #define BEEPER_PIN       P1_31   // EXP1.1
+//  #define BTN_ENC          P1_30   // EXP1.2
+//  #define BTN_EN1          P3_26   // EXP2.5
+//  #define BTN_EN2          P3_25   // EXP2.3
+//  #define LCD_PINS_RS      P0_16   // EXP1.4
+//  #define LCD_SDSS         P0_28   // EXP2.4
+//  #define LCD_PINS_ENABLE  P0_18   // EXP1.3
+//  #define LCD_PINS_D4      P0_15   // EXP1.5
+//  #if ANY(VIKI2, miniVIKI)
+//    #define DOGLCD_SCK     SCK_PIN
+//    #define DOGLCD_MOSI    MOSI_PIN
+//  #endif
+//#endif
 
 /**
  * Example for trinamic drivers using the J8 connector on MKs Sbase.
@@ -276,49 +287,49 @@
  * This board does not have enough pins to use hardware serial.
  */
 
-#if HAS_DRIVER(TMC2130)
-  // J8
-  #define X_CS_PIN         P1_22
-  #define Y_CS_PIN         P1_23
-  #define Z_CS_PIN         P2_12
-  #define E0_CS_PIN        P2_11
-  #define E1_CS_PIN        P4_28
+//#if HAS_DRIVER(TMC2130)
+//  // J8
+//  #define X_CS_PIN         P1_22
+//  #define Y_CS_PIN         P1_23
+//  #define Z_CS_PIN         P2_12
+//  #define E0_CS_PIN        P2_11
+//  #define E1_CS_PIN        P4_28
+//
+//// Hardware SPI is on EXP2. See if you can make it work:
+//// https://github.com/makerbase-mks/MKS-SBASE/issues/25
+//#define TMC_USE_SW_SPI
+//#if ENABLED(TMC_USE_SW_SPI)
+//  #ifndef TMC_SW_MOSI
+//    #define TMC_SW_MOSI    P0_03   // AUX1
+//  #endif
+//  #ifndef TMC_SW_MISO
+//    #define TMC_SW_MISO    P0_02   // AUX1
+//  #endif
+//  #ifndef TMC_SW_SCK
+//    #define TMC_SW_SCK     P0_26   // TH4
+//  #endif
+// #endif
+//#endif
 
-// Hardware SPI is on EXP2. See if you can make it work:
-// https://github.com/makerbase-mks/MKS-SBASE/issues/25
-#define TMC_USE_SW_SPI
-#if ENABLED(TMC_USE_SW_SPI)
-  #ifndef TMC_SW_MOSI
-    #define TMC_SW_MOSI    P0_03   // AUX1
-  #endif
-  #ifndef TMC_SW_MISO
-    #define TMC_SW_MISO    P0_02   // AUX1
-  #endif
-  #ifndef TMC_SW_SCK
-    #define TMC_SW_SCK     P0_26   // TH4
-  #endif
- #endif
-#endif
-
-#if HAS_DRIVER(TMC2208)
-  // The shortage of pins becomes apparent.
-  // Worst case you may have to give up the LCD
-  // RX pins need to be interrupt capable
-  #define X_SERIAL_TX_PIN  P1_22   // J8-2
-  #define X_SERIAL_RX_PIN  P2_12   // J8-4 Interrupt Capable
-  #define Y_SERIAL_TX_PIN  P1_23   // J8-3
-  #define Y_SERIAL_RX_PIN  P2_11   // J8-5 Interrupt Capable
-  #define Z_SERIAL_TX_PIN  P2_12   // J8-4
-  #define Z_SERIAL_RX_PIN  P0_25   // TH3
-  #define E0_SERIAL_TX_PIN P4_28   // J8-6
-  #define E0_SERIAL_RX_PIN P0_26   // TH4
-#endif
+//#if HAS_DRIVER(TMC2208)
+//  // The shortage of pins becomes apparent.
+//  // Worst case you may have to give up the LCD
+//  // RX pins need to be interrupt capable
+//  #define X_SERIAL_TX_PIN  P1_22   // J8-2
+//  #define X_SERIAL_RX_PIN  P2_12   // J8-4 Interrupt Capable
+//  #define Y_SERIAL_TX_PIN  P1_23   // J8-3
+//  #define Y_SERIAL_RX_PIN  P2_11   // J8-5 Interrupt Capable
+//  #define Z_SERIAL_TX_PIN  P2_12   // J8-4
+//  #define Z_SERIAL_RX_PIN  P0_25   // TH3
+//  #define E0_SERIAL_TX_PIN P4_28   // J8-6
+//  #define E0_SERIAL_RX_PIN P0_26   // TH4
+//#endif
 
 // UNUSED
-#define PIN_P0_27          P0_27   // EXP2/Onboard SD
-#define PIN_P0_28          P0_28   // EXP2
-#define PIN_P0_02          P0_02   // AUX1 (Interrupt Capable/ADC/Serial Port 0)
-#define PIN_P0_03          P0_03   // AUX1 (Interrupt Capable/ADC/Serial Port 0)
+//#define PIN_P0_27          P0_27   // EXP2/Onboard SD
+//#define PIN_P0_28          P0_28   // EXP2
+//#define PIN_P0_02          P0_02   // AUX1 (Interrupt Capable/ADC/Serial Port 0)
+//#define PIN_P0_03          P0_03   // AUX1 (Interrupt Capable/ADC/Serial Port 0)
 
 /**
  *  PWMs
