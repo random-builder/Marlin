@@ -33,7 +33,17 @@
 #include "../core/millis_t.h"
 #include "Version.h"
 #include "../../Configuration.h"
+
+#if __has_include("../../User_Configuration.h")
+    #include "../../User_Configuration.h"
+#endif
+
 #include "Conditionals_LCD.h"
 #include "../core/drivers.h"
 #include "../../Configuration_adv.h"
+
+#if __has_include("../../User_Configuration_adv.h")
+    #include "../../User_Configuration_adv.h"
+#endif
+
 #include "Conditionals_adv.h"
