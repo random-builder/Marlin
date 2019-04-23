@@ -13,7 +13,6 @@
 #undef  MOTHERBOARD
 #define MOTHERBOARD BOARD_MKS_SBASE
 
-#undef  CUSTOM_MACHINE_NAME
 #define CUSTOM_MACHINE_NAME "Wanhao-D6/MKS-SBASE"
 
 #define MACHINE_UUID __DATE__ " " __TIME__
@@ -105,6 +104,7 @@
 
 // using BLTouch
 #undef  Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+
 #define Z_MIN_PROBE_PIN BLTOUCH_PIN
 
 #define BLTOUCH
@@ -129,7 +129,7 @@
 
 #define NO_MOTION_BEFORE_HOMING
 
-// Enable negative probe offset.
+// Enable negative probe offset
 #undef  MIN_SOFTWARE_ENDSTOP_Z
 
 #define AUTO_BED_LEVELING_UBL
@@ -146,6 +146,8 @@
 #define UBL_MESH_EDIT_MOVES_Z
 
 #define Z_SAFE_HOMING
+#define Z_SAFE_HOMING_X_POINT ((X_BED_SIZE) / 2)
+#define Z_SAFE_HOMING_Y_POINT ((Y_BED_SIZE) / 2)
 
 #undef  HOMING_FEEDRATE_XY
 #undef  HOMING_FEEDRATE_Z
