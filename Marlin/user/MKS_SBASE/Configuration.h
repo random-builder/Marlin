@@ -33,7 +33,6 @@
 #define TEMP_SENSOR_BED 1     // 100k thermistor
 #define TEMP_SENSOR_CHAMBER 1 // 100k thermistor
 
-
 #undef  HEATER_0_MAXTEMP
 #undef  HEATER_1_MAXTEMP
 #define HEATER_0_MAXTEMP 350
@@ -98,6 +97,7 @@
 #define DEFAULT_MAX_ACCELERATION      { 9000, 9000, 100, 10000, 10000 }
 
 #define JUNCTION_DEVIATION
+
 #undef  JUNCTION_DEVIATION_MM
 #define JUNCTION_DEVIATION_MM 0.05
 
@@ -110,9 +110,9 @@
 #define BLTOUCH
 #define BLTOUCH_DELAY 100
 
-#undef   X_PROBE_OFFSET_FROM_EXTRUDER
-#undef   Y_PROBE_OFFSET_FROM_EXTRUDER
-#undef   Z_PROBE_OFFSET_FROM_EXTRUDER
+#undef  X_PROBE_OFFSET_FROM_EXTRUDER
+#undef  Y_PROBE_OFFSET_FROM_EXTRUDER
+#undef  Z_PROBE_OFFSET_FROM_EXTRUDER
 #define X_PROBE_OFFSET_FROM_EXTRUDER 0   // X offset: -left  +right  [of the nozzle]
 #define Y_PROBE_OFFSET_FROM_EXTRUDER +46 // Y offset: -front +behind [the nozzle]
 #define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
@@ -129,12 +129,13 @@
 
 #define NO_MOTION_BEFORE_HOMING
 
- // Enable negative probe offset.
+// Enable negative probe offset.
 #undef  MIN_SOFTWARE_ENDSTOP_Z
 
-///
-
 #define AUTO_BED_LEVELING_UBL
+#define ENABLE_LEVELING_FADE_HEIGHT
+#define SEGMENT_LEVELED_MOVES
+#define LEVELED_SEGMENT_LENGTH 5.0
 
 #define RESTORE_LEVELING_AFTER_G28 false
 
