@@ -372,5 +372,3 @@
   *   P0_30 - USB
   *
   */
-
-#include "pins_MKS_SBASE_override.h"
