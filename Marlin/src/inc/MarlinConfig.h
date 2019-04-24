@@ -31,6 +31,10 @@
 
 #include "../pins/pins.h"
 
+#if __has_include("../../user/pins.h")
+    #include "../../user/pins.h"
+#endif
+
 #include HAL_PATH(../HAL, spi_pins.h)
 
 #if defined(__AVR__) && !defined(USBCON)

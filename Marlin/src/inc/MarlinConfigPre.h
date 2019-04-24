@@ -34,16 +34,16 @@
 #include "Version.h"
 #include "../../Configuration.h"
 
-#if __has_include("../../user/MKS_SBASE/Configuration.h")
-    #include "../../user/MKS_SBASE/Configuration.h"
+#if __has_include("../../user/Configuration.h")
+    #include "../../user/Configuration.h"
 #endif
 
 #include "Conditionals_LCD.h"
 #include "../core/drivers.h"
 #include "../../Configuration_adv.h"
 
-#if __has_include("../../user/MKS_SBASE/Configuration_adv.h")
-    #include "../../user/MKS_SBASE/Configuration_adv.h"
+#if __has_include("../../user/Configuration_adv.h")
+    #include "../../user/Configuration_adv.h"
 #endif
 
 #include "Conditionals_adv.h"

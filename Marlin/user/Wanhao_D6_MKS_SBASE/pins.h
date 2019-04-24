@@ -1,3 +1,6 @@
+//
+// structured configuration; see #13752
+//
 
 // see https://github.com/p3p/pio-framework-arduino-lpc176x
 
