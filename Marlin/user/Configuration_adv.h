@@ -5,7 +5,9 @@
 #pragma once
 
 #ifdef USER_Wanhao_D6_MKS_SBASE
-    #if __has_include("Wanhao_D6_MKS_SBASE/Configuration_adv.h")
-        #include "Wanhao_D6_MKS_SBASE/Configuration_adv.h"
-    #endif
+    #include "Wanhao_D6_MKS_SBASE/Configuration_adv.h"
+#endif
+
+#ifdef USER_Custom_07_BIGTREE_SKR
+    #include "Custom_07_BIGTREE_SKR/Configuration_adv.h"
 #endif

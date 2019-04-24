@@ -26,8 +26,13 @@ function platformio_build() {
 	
 	local option_list=$(parse_define $define_keys)
 
-	cd $root_dir
+	# work around #13801 - TODO
+	#export PLATFORMIO_EXTRA_SCRIPTS="/bin/true"
+	
+	# activate configuration override
 	export PLATFORMIO_BUILD_FLAGS="$option_list"
+	
+	cd $root_dir
 	platformio run --environment $environment --project-dir $root_dir
 	
 }

@@ -12,6 +12,6 @@ define_keys="USER_Wanhao_D6_MKS_SBASE"
 
 here_dir=$(cd $(dirname $0) && pwd)
 
-source $here_dir/build_any.sh
+source $here_dir/build_Any.sh
 
 platformio_build

@@ -27,7 +27,6 @@
 #undef SERVO1_PIN
 #undef SERVO2_PIN
 #undef SERVO3_PIN
-// remap
 #define SERVO0_PIN         P4_28 // BLTouch control signal "BL/PWM"; s/w pwm
 #define SERVO1_PIN         P3_25 // "SRV1"; h/w pwm channel #2
 #define SERVO2_PIN         P3_26 // "SRV2"; h/w pwm channel #3
@@ -46,7 +45,6 @@
 #undef TEMP_0_PIN
 #undef TEMP_1_PIN
 #undef TEMP_2_PIN
-// remap
 #define TEMP_BED_PIN        0   // A0 (TH1)
 #define TEMP_CHAMBER_PIN    1   // A1 (TH2)
 #define TEMP_0_PIN          4   // A4: heater1-> pt100_e3d -> P1_30 
