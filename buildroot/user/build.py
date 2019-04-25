@@ -32,7 +32,7 @@ def platformio_run():
     os.environ['PLATFORMIO_BUILD_FLAGS'] = build_flags
 
     # work around #13801 - TODO
-    os.environ['PLATFORMIO_EXTRA_SCRIPTS'] = "/bin/true"
+    os.environ['PLATFORMIO_EXTRA_SCRIPTS'] = ""
     
     command = ["platformio", "run", "--environment", environment, "--project-dir", root_dir]
 
