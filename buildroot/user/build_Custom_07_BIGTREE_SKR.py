@@ -3,6 +3,6 @@
 import build
 
 build.environment="LPC1768"
-build.printer_name="USER_Wanhao_D6_MKS_SBASE"
+build.printer_name="USER_Custom_07_BIGTREE_SKR"
 
 build.platformio_run()
