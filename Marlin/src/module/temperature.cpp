@@ -136,7 +136,6 @@ hotend_info_t Temperature::temp_hotend[HOTENDS]; // = { 0 }
 
   #if ENABLED(PROBING_FANS_OFF)
     bool Temperature::fans_paused; // = false;
-    uint8_t Temperature::paused_fan_speed[FAN_COUNT]; // = { 0 }
   #endif
 
   #if ENABLED(ADAPTIVE_FAN_SLOWING)
@@ -175,19 +174,20 @@ hotend_info_t Temperature::temp_hotend[HOTENDS]; // = { 0 }
     #endif
   }
 
-  #if ENABLED(PROBING_FANS_OFF)
+  #if EITHER(PROBING_FANS_OFF, ADVANCED_PAUSE_FANS_PAUSE)
 
     void Temperature::set_fans_paused(const bool p) {
+      static uint8_t saved_fan_speed[FAN_COUNT]; // = { 0 }
       if (p != fans_paused) {
         fans_paused = p;
         if (p)
-          FANS_LOOP(x) { paused_fan_speed[x] = fan_speed[x]; fan_speed[x] = 0; }
+          FANS_LOOP(i) { saved_fan_speed[i] = fan_speed[i]; fan_speed[i] = 0; }
         else
-          FANS_LOOP(x) fan_speed[x] = paused_fan_speed[x];
+          FANS_LOOP(i) fan_speed[i] = saved_fan_speed[i];
       }
     }
 
-  #endif // PROBING_FANS_OFF
+  #endif
 
 #endif // FAN_COUNT > 0
 
@@ -2825,6 +2825,7 @@ void Temperature::isr() {
     ) {
       #if TEMP_BED_RESIDENCY_TIME > 0
         millis_t residency_start_ms = 0;
+        bool first_loop = true;
         // Loop until the temperature has stabilized
         #define TEMP_BED_CONDITIONS (!residency_start_ms || PENDING(now, residency_start_ms + (TEMP_BED_RESIDENCY_TIME) * 1000UL))
       #else
@@ -2833,7 +2834,7 @@ void Temperature::isr() {
       #endif
 
       float target_temp = -1, old_temp = 9999;
-      bool wants_to_cool = false, first_loop = true;
+      bool wants_to_cool = false;
       wait_for_heatup = true;
       millis_t now, next_temp_ms = 0, next_cool_check_ms = 0;
 
@@ -2917,7 +2918,9 @@ void Temperature::isr() {
           }
         #endif
 
-        first_loop = false;
+        #if TEMP_BED_RESIDENCY_TIME > 0
+          first_loop = false;
+        #endif
 
       } while (wait_for_heatup && TEMP_BED_CONDITIONS);
 
