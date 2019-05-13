@@ -36,6 +36,7 @@
 // Includes
 // --------------------------------------------------------------------------
 
+#include "../../core/macros.h"
 #include "../shared/Marduino.h"
 #include "../shared/math_32bit.h"
 #include "../shared/HAL_SPI.h"
@@ -128,7 +129,7 @@ void HAL_init();
 #endif
 
 #ifndef digitalPinHasPWM
-  #define digitalPinHasPWM(P) (PIN_MAP[P].timer_device != NULL)
+  #define digitalPinHasPWM(P) (PIN_MAP[P].timer_device != nullptr)
 #endif
 
 #define CRITICAL_SECTION_START  uint32_t primask = __get_primask(); (void)__iCliRetVal()
