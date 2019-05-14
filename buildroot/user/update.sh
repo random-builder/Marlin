@@ -19,7 +19,7 @@ RATE="115200" # does not affect usb speed
 PATH_LOC="$location"
 
 # location of generated firmware.bin 
-PATH_BIN="$PATH_LOC/../../.pioenvs/LPC1768"
+PATH_BIN="$PATH_LOC/../../.pioenvs/USER_Wanhao_D6_MKS_SBASE/LPC1768"
 
 # working folder on remote host
 PATH_REM="/home/pi/marlin"
