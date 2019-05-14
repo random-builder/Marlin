@@ -20,7 +20,7 @@ def platformio_run():
     build_dir = os.path.join(root_dir, ".pioenvs", printer_name)
     build_flags = "-D" + printer_name
     
-    extra_script = os.path.join(this_dir, "extra_script.py")
+    script_setup = os.path.join(this_dir, "setup.py")
     
     print("environment=" + environment) 
     print("printer_name=" + printer_name) 
@@ -37,7 +37,7 @@ def platformio_run():
     os.environ['PLATFORMIO_ENVIRONMENT'] = f"{environment}"
 
     # provide custom scripts
-    os.environ['PLATFORMIO_EXTRA_SCRIPTS'] = f"{extra_script}"
+    os.environ['PLATFORMIO_EXTRA_SCRIPTS'] = f"{script_setup}"
     
     command_upload = ["platformio", "run", "--environment", environment, "--project-dir", root_dir, "--target", "setup"]
     subprocess.run(command_upload)
