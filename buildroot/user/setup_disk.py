@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import sys
 import time
 import logging
 import paramiko
@@ -15,7 +16,8 @@ logging.basicConfig(
 )
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--host_uri', dest="host_uri", default="pi@octopi2")
+parser.add_argument('--user_name', dest="user_name", default="pi")
+parser.add_argument('--host_name', dest="host_name", default="octopi2")
 parser.add_argument('--disk_label', dest="disk_label", default="MKS-BASE")
 parser.add_argument('--firmware_path', dest="firmware_path", required=True)
 
@@ -42,11 +44,10 @@ def trace(func):
 
 
 @trace
-def disk_find(label=params.disk_label) -> str:
+def disk_find(label:str) -> str:
     result = ssh(f"sudo lsblk -n -l -o name,label | grep {label} | head -n 1")
     if result.returncode == 0:
-        stdout = result.stdout
-        stdparts = stdout.split()
+        stdparts = result.stdout.split()
         if len(stdparts) == 2:
             disk_name = stdparts[0].decode('utf-8')
             return disk_name
@@ -58,7 +59,7 @@ def disk_find(label=params.disk_label) -> str:
 
 @trace
 def disk_has_point(disk_point):
-    result = ssh(f"mountpoint {disk_point}")
+    result = ssh(f"cat /proc/mounts | grep {disk_point}")
     return result.returncode == 0
 
 
@@ -93,7 +94,7 @@ def disk_point_unmount(disk_point):
 
 
 @trace
-def disk_setup(disk_name, firmware_path=params.firmware_path):
+def disk_setup(disk_name, firmware_path):
     disk_path = f"/dev/{disk_name}"
     disk_point = f"/tmp/disk-setup/{disk_name}"
     disk_point_unmount(disk_point)
@@ -104,13 +105,14 @@ def disk_setup(disk_name, firmware_path=params.firmware_path):
     disk_point_delete(disk_point)
 
 
-def ssh_x(script, host_uri=params.host_uri, check=True, stdin=None):
-    command = ["ssh", host_uri, script]
-    result = subprocess.run(command, check=check,
-        shell=False, stdin=stdin,
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-    )    
+def shell(script):
+    result = subprocess.run(script, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     return result
+
+
+def has_host(host_name):
+    result = shell(f"ping -c 1 {host_name}")
+    return result.returncode == 0
 
 
 class Result() :
@@ -129,31 +131,28 @@ def ssh(script):
     return result
 
 
-def scp_x(source_path, target_path, host_uri=params.host_uri, check=True, stdin=None):
-    source_uri = f"{source_path}"
-    target_uri = f"{host_uri}:{target_path}"
-    command = ["scp", source_uri, target_uri]
-    result = subprocess.run(command, check=check,
-        shell=False, stdin=stdin,
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-    )    
-    return result
-
-
 def scp(source_path, target_path):
     ftp_client = ssh_client.open_sftp()
     ftp_client.put(source_path, target_path)
     ftp_client.close()
-    
+
+#
+#
+#
+
+
+if not has_host(params.host_name):
+    print(f"missing host={params.host_name}")
+    sys.exit()
 
 ssh_client = paramiko.SSHClient()
 ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh_client.connect(username="pi", hostname="octopi2",)
+ssh_client.connect(username=params.user_name, hostname=params.host_name,)
 
-disk_name = disk_find()
-print(f"disk_name={disk_name}")
+disk_name = disk_find(params.disk_label)
 
 if disk_name is None:
+    print(f"missing disk={params.disk_label}")
     sys.exit()
 
-disk_setup(disk_name)
+disk_setup(disk_name, params.firmware_path)
