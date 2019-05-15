@@ -15,7 +15,7 @@
 
 #define CUSTOM_MACHINE_NAME "Wanhao-D6/MKS-SBASE"
 
-#define MACHINE_UUID __DATE__ " " __TIME__
+#define MACHINE_UUID user_render(USER_STAMP)
 
 #undef  EXTRUDERS
 #define EXTRUDERS 2
