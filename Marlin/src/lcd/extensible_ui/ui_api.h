@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
 /************
  * ui_api.h *
@@ -41,11 +42,10 @@
  *   location: <http://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
 
-#pragma once
-
 #include "../../inc/MarlinConfig.h"
 
 namespace ExtUI {
+
   // The ExtUI implementation can store up to this many bytes
   // in the EEPROM when the methods onStoreSettings and
   // onLoadSettings are called.
@@ -53,27 +53,38 @@ namespace ExtUI {
   static constexpr size_t eeprom_data_size = 48;
 
   enum axis_t     : uint8_t { X, Y, Z };
-  enum extruder_t : uint8_t { E0, E1, E2, E3, E4, E5 };
-  enum heater_t   : uint8_t { H0, H1, H2, H3, H4, H5, BED };
-  enum fan_t      : uint8_t { FAN0, FAN1, FAN2, FAN3, FAN4, FAN5 };
+  enum extruder_t : uint8_t { E0, E1, E2, E3, E4, E5, E6, E7 };
+  enum heater_t   : uint8_t { H0, H1, H2, H3, H4, H5, BED, CHAMBER };
+  enum fan_t      : uint8_t { FAN0, FAN1, FAN2, FAN3, FAN4, FAN5, FAN6, FAN7 };
+  enum result_t   : uint8_t { PID_BAD_EXTRUDER_NUM, PID_TEMP_TOO_HIGH, PID_TUNING_TIMEOUT, PID_DONE };
 
   constexpr uint8_t extruderCount = EXTRUDERS;
   constexpr uint8_t hotendCount   = HOTENDS;
   constexpr uint8_t fanCount      = FAN_COUNT;
 
+  #if HAS_MESH
+    typedef float bed_mesh_t[GRID_MAX_POINTS_X][GRID_MAX_POINTS_Y];
+  #endif
+
   bool isMoving();
   bool isAxisPositionKnown(const axis_t);
+  bool isAxisPositionKnown(const extruder_t);
   bool isPositionKnown(); // Axis position guaranteed, steppers active since homing
   bool isMachineHomed(); // Axis position most likely correct, steppers may have deactivated
   bool canMove(const axis_t);
   bool canMove(const extruder_t);
-  void enqueueCommands_P(PGM_P const);
+  void injectCommands_P(PGM_P const);
   bool commandsInQueue();
 
   bool isHeaterIdle(const heater_t);
   bool isHeaterIdle(const extruder_t);
   void enableHeater(const heater_t);
   void enableHeater(const extruder_t);
+
+  #if ENABLED(JOYSTICK)
+    void jog(const xyz_float_t &dir);
+    void _joystick_update(xyz_float_t &norm_jog);
+  #endif
 
   /**
    * Getters and setters
@@ -92,7 +103,7 @@ namespace ExtUI {
     void  setAxisCurrent_mA(const float, const axis_t);
     void  setAxisCurrent_mA(const float, const extruder_t);
 
-    int getTMCBumpSensitivity(const axis_t);
+     int getTMCBumpSensitivity(const axis_t);
     void setTMCBumpSensitivity(const float, const axis_t);
   #endif
 
@@ -106,29 +117,30 @@ namespace ExtUI {
   float getAxisPosition_mm(const extruder_t);
   float getAxisSteps_per_mm(const axis_t);
   float getAxisSteps_per_mm(const extruder_t);
-  float getAxisMaxFeedrate_mm_s(const axis_t);
-  float getAxisMaxFeedrate_mm_s(const extruder_t);
+  feedRate_t getAxisMaxFeedrate_mm_s(const axis_t);
+  feedRate_t getAxisMaxFeedrate_mm_s(const extruder_t);
   float getAxisMaxAcceleration_mm_s2(const axis_t);
   float getAxisMaxAcceleration_mm_s2(const extruder_t);
-  float getMinFeedrate_mm_s();
-  float getMinTravelFeedrate_mm_s();
+  feedRate_t getMinFeedrate_mm_s();
+  feedRate_t getMinTravelFeedrate_mm_s();
   float getPrintingAcceleration_mm_s2();
   float getRetractAcceleration_mm_s2();
   float getTravelAcceleration_mm_s2();
   float getFeedrate_percent();
+  int16_t getFlowPercentage(const extruder_t);
   uint8_t getProgress_percent();
   uint32_t getProgress_seconds_elapsed();
 
   #if HAS_LEVELING
     bool getLevelingActive();
     void setLevelingActive(const bool);
+    bool getMeshValid();
     #if HAS_MESH
-      #include "../../feature/bedlevel/bedlevel.h"
-      bool getMeshValid();
-      bed_mesh_t getMeshArray();
-      float getMeshPoint(const uint8_t xpos, const uint8_t ypos);
-      void setMeshPoint(const uint8_t xpos, const uint8_t ypos, const float zval);
-      void onMeshUpdate(const uint8_t xpos, const uint8_t ypos, const float zval);
+      bed_mesh_t& getMeshArray();
+      float getMeshPoint(const xy_uint8_t &pos);
+      void setMeshPoint(const xy_uint8_t &pos, const float zval);
+      void onMeshUpdate(const int8_t xpos, const int8_t ypos, const float zval);
+      inline void onMeshUpdate(const xy_int8_t &pos, const float zval) { onMeshUpdate(pos.x, pos.y, zval); }
     #endif
   #endif
 
@@ -151,25 +163,26 @@ namespace ExtUI {
   void setAxisPosition_mm(const float, const extruder_t);
   void setAxisSteps_per_mm(const float, const axis_t);
   void setAxisSteps_per_mm(const float, const extruder_t);
-  void setAxisMaxFeedrate_mm_s(const float, const axis_t);
-  void setAxisMaxFeedrate_mm_s(const float, const extruder_t);
+  void setAxisMaxFeedrate_mm_s(const feedRate_t, const axis_t);
+  void setAxisMaxFeedrate_mm_s(const feedRate_t, const extruder_t);
   void setAxisMaxAcceleration_mm_s2(const float, const axis_t);
   void setAxisMaxAcceleration_mm_s2(const float, const extruder_t);
-  void setFeedrate_mm_s(const float);
-  void setMinFeedrate_mm_s(const float);
-  void setMinTravelFeedrate_mm_s(const float);
+  void setFeedrate_mm_s(const feedRate_t);
+  void setMinFeedrate_mm_s(const feedRate_t);
+  void setMinTravelFeedrate_mm_s(const feedRate_t);
   void setPrintingAcceleration_mm_s2(const float);
   void setRetractAcceleration_mm_s2(const float);
   void setTravelAcceleration_mm_s2(const float);
   void setFeedrate_percent(const float);
-  void setUserConfirmed(void);
+  void setFlow_percent(const int16_t, const extruder_t);
+  void setUserConfirmed();
 
   #if ENABLED(LIN_ADVANCE)
     float getLinearAdvance_mm_mm_s(const extruder_t);
     void setLinearAdvance_mm_mm_s(const float, const extruder_t);
   #endif
 
-  #if ENABLED(JUNCTION_DEVIATION)
+  #if DISABLED(CLASSIC_JERK)
     float getJunctionDeviation_mm();
     void setJunctionDeviation_mm(const float);
   #else
@@ -195,9 +208,12 @@ namespace ExtUI {
     void normalizeNozzleOffset(const axis_t axis);
   #endif
 
+  float getZOffset_mm();
+  void setZOffset_mm(const float);
+
   #if HAS_BED_PROBE
-    float getZOffset_mm();
-    void setZOffset_mm(const float);
+    float getProbeOffset_mm(const axis_t);
+    void setProbeOffset_mm(const float, const axis_t);
   #endif
 
   #if ENABLED(BACKLASH_GCODE)
@@ -221,6 +237,32 @@ namespace ExtUI {
       float getFilamentRunoutDistance_mm();
       void setFilamentRunoutDistance_mm(const float);
     #endif
+  #endif
+
+  #if ENABLED(CASE_LIGHT_ENABLE)
+    bool getCaseLightState();
+    void setCaseLightState(const bool);
+
+    #if DISABLED(CASE_LIGHT_NO_BRIGHTNESS)
+      float getCaseLightBrightness_percent();
+      void setCaseLightBrightness_percent(const float);
+    #endif
+  #endif
+
+  #if ENABLED(PIDTEMP)
+    float getPIDValues_Kp(const extruder_t);
+    float getPIDValues_Ki(const extruder_t);
+    float getPIDValues_Kd(const extruder_t);
+    void setPIDValues(const float, const float, const float, extruder_t);
+    void startPIDTune(const float, extruder_t);
+  #endif
+  
+  #if ENABLED(PIDTEMPBED)
+    float getBedPIDValues_Kp();
+    float getBedPIDValues_Ki();
+    float getBedPIDValues_Kd();
+    void setBedPIDValues(const float, const float, const float);
+    void startBedPIDTune(const float);
   #endif
 
   /**
@@ -271,7 +313,7 @@ namespace ExtUI {
       void changeDir(const char * const dirname);
       void upDir();
       bool isAtRootDir();
-      uint16_t    count();
+      uint16_t count();
   };
 
   /**
@@ -285,18 +327,25 @@ namespace ExtUI {
   void onMediaError();
   void onMediaRemoved();
   void onPlayTone(const uint16_t frequency, const uint16_t duration);
-  void onPrinterKilled(PGM_P const msg);
+  void onPrinterKilled(PGM_P const error, PGM_P const component);
   void onPrintTimerStarted();
   void onPrintTimerPaused();
   void onPrintTimerStopped();
   void onFilamentRunout(const extruder_t extruder);
   void onUserConfirmRequired(const char * const msg);
+  void onUserConfirmRequired_P(PGM_P const pstr);
   void onStatusChanged(const char * const msg);
   void onFactoryReset();
   void onStoreSettings(char *);
   void onLoadSettings(const char *);
   void onConfigurationStoreWritten(bool success);
   void onConfigurationStoreRead(bool success);
+  #if ENABLED(POWER_LOSS_RECOVERY)
+    void OnPowerLossResume();
+  #endif
+  #if HAS_PID_HEATING
+    void OnPidTuning(const result_t rst);
+  #endif
 };
 
 /**

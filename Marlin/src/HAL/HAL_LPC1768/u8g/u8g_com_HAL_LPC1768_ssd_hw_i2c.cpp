@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,8 +85,6 @@
 //#define I2C_CMD_MODE  0x080
 #define I2C_CMD_MODE    0x000
 #define I2C_DATA_MODE   0x040
-
-//#define U8G_I2C_OPT_FAST 16
 
 uint8_t u8g_com_ssd_I2C_start_sequence(u8g_t *u8g) {
   /* are we requested to set the a0 state? */

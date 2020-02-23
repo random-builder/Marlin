@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,43 @@
  * Conditionals_adv.h
  * Defines that depend on advanced configuration.
  */
+
+#if EXTRUDERS == 0
+  #define NO_VOLUMETRICS
+  #undef TEMP_SENSOR_0
+  #undef TEMP_SENSOR_1
+  #undef TEMP_SENSOR_2
+  #undef TEMP_SENSOR_3
+  #undef TEMP_SENSOR_4
+  #undef TEMP_SENSOR_5
+  #undef TEMP_SENSOR_6
+  #undef TEMP_SENSOR_7
+  #undef FWRETRACT
+  #undef PIDTEMP
+  #undef AUTOTEMP
+  #undef PID_EXTRUSION_SCALING
+  #undef LIN_ADVANCE
+  #undef FILAMENT_RUNOUT_SENSOR
+  #undef ADVANCED_PAUSE_FEATURE
+  #undef FILAMENT_RUNOUT_DISTANCE_MM
+  #undef FILAMENT_LOAD_UNLOAD_GCODES
+  #undef DISABLE_INACTIVE_EXTRUDER
+  #undef FILAMENT_LOAD_UNLOAD_GCODES
+  #undef EXTRUDER_RUNOUT_PREVENT
+  #undef PREVENT_COLD_EXTRUSION
+  #undef PREVENT_LENGTHY_EXTRUDE
+  #undef THERMAL_PROTECTION_HOTENDS
+  #undef THERMAL_PROTECTION_PERIOD
+  #undef WATCH_TEMP_PERIOD
+  #undef SHOW_TEMP_ADC_VALUES
+#endif
+
+// Multiple Z steppers
+#ifndef NUM_Z_STEPPER_DRIVERS
+  #define NUM_Z_STEPPER_DRIVERS 1
+#endif
+
+#define HAS_CUTTER EITHER(SPINDLE_FEATURE, LASER_FEATURE)
 
 #if !defined(__AVR__) || !defined(USBCON)
   // Define constants and variables for buffering serial data.
@@ -96,4 +133,17 @@
   #ifndef LED_USER_PRESET_BRIGHTNESS
     #define LED_USER_PRESET_BRIGHTNESS 255
   #endif
+#endif
+
+// Extensible UI pin mapping for RepRapDiscount
+#define TOUCH_UI_ULTIPANEL ENABLED(TOUCH_UI_FTDI_EVE) && ANY(AO_EXP1_PINMAP, AO_EXP2_PINMAP, CR10_TFT_PINMAP)
+
+// Poll-based jogging for joystick and other devices
+#if ENABLED(JOYSTICK)
+  #define POLL_JOG
+#endif
+
+// G60/G61 Position Save
+#if SAVED_POSITIONS > 256
+  #error "SAVED_POSITIONS must be an integer from 0 to 256."
 #endif

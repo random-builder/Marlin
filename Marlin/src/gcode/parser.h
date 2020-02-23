@@ -1,9 +1,9 @@
 /**
  * Marlin 3D Printer Firmware
- * Copyright (C) 2019 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
  * Based on Sprinter and grbl.
- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,14 @@
 //#define DEBUG_GCODE_PARSER
 #if ENABLED(DEBUG_GCODE_PARSER)
   #include "../libs/hex_print_routines.h"
+#endif
+
+#if ENABLED(TEMPERATURE_UNITS_SUPPORT)
+  typedef enum : uint8_t { TEMPUNIT_C, TEMPUNIT_K, TEMPUNIT_F } TempUnit;
+#endif
+
+#if ENABLED(INCH_MODE_SUPPORT)
+  typedef enum : uint8_t { LINEARUNIT_MM, LINEARUNIT_INCH } LinearUnit;
 #endif
 
 /**
@@ -77,13 +85,13 @@ public:
               *string_arg,                // string of command line
               command_letter;             // G, M, or T
   static int codenum;                     // 123
-  #if USE_GCODE_SUBCODES
+  #if ENABLED(USE_GCODE_SUBCODES)
     static uint8_t subcode;               // .1
   #endif
 
   #if ENABLED(GCODE_MOTION_MODES)
     static int16_t motion_mode_codenum;
-    #if USE_GCODE_SUBCODES
+    #if ENABLED(USE_GCODE_SUBCODES)
       static uint8_t motion_mode_subcode;
     #endif
     FORCE_INLINE static void cancel_motion_mode() { motion_mode_codenum = -1; }
@@ -200,6 +208,12 @@ public:
     return SEEN_TEST('X') || SEEN_TEST('Y') || SEEN_TEST('Z') || SEEN_TEST('E');
   }
 
+  #if ENABLED(GCODE_QUOTED_STRINGS)
+    static char* unescape_string(char* &src);
+  #else
+    FORCE_INLINE static char* unescape_string(char* &src) { return src; }
+  #endif
+
   // Populate all fields by parsing a single line of GCode
   // This uses 54 bytes of SRAM to speed up seen/value
   static void parse(char * p);
@@ -214,6 +228,9 @@ public:
 
   // Seen a parameter with a value
   static inline bool seenval(const char c) { return seen(c) && has_value(); }
+
+  // Float removes 'E' to prevent scientific notation interpretation
+  static inline char* value_string() { return value_ptr; }
 
   // Float removes 'E' to prevent scientific notation interpretation
   static inline float value_float() {
@@ -254,7 +271,6 @@ public:
   // Units modes: Inches, Fahrenheit, Kelvin
 
   #if ENABLED(INCH_MODE_SUPPORT)
-
     static inline float mm_to_linear_unit(const float mm)     { return mm / linear_unit_factor; }
     static inline float mm_to_volumetric_unit(const float mm) { return mm / (volumetric_enabled ? volumetric_unit_factor : linear_unit_factor); }
 
@@ -263,13 +279,9 @@ public:
 
     static inline void set_input_linear_units(const LinearUnit units) {
       switch (units) {
-        case LINEARUNIT_INCH:
-          linear_unit_factor = 25.4f;
-          break;
-        case LINEARUNIT_MM:
         default:
-          linear_unit_factor = 1;
-          break;
+        case LINEARUNIT_MM:   linear_unit_factor =  1.0f; break;
+        case LINEARUNIT_INCH: linear_unit_factor = 25.4f; break;
       }
       volumetric_unit_factor = POW(linear_unit_factor, 3);
     }
@@ -287,9 +299,9 @@ public:
     static inline float mm_to_linear_unit(const float mm)     { return mm; }
     static inline float mm_to_volumetric_unit(const float mm) { return mm; }
 
-    static inline float linear_value_to_mm(const float v)                    { return v; }
-    static inline float axis_value_to_mm(const AxisEnum axis, const float v) { UNUSED(axis); return v; }
-    static inline float per_axis_value(const AxisEnum axis, const float v)   { UNUSED(axis); return v; }
+    static inline float linear_value_to_mm(const float v)               { return v; }
+    static inline float axis_value_to_mm(const AxisEnum, const float v) { return v; }
+    static inline float per_axis_value(const AxisEnum, const float v)   { return v; }
 
   #endif
 
@@ -302,7 +314,7 @@ public:
 
   #if ENABLED(TEMPERATURE_UNITS_SUPPORT)
 
-    static inline void set_input_temp_units(TempUnit units) { input_temp_units = units; }
+    static inline void set_input_temp_units(const TempUnit units) { input_temp_units = units; }
 
     #if HAS_LCD_MENU && DISABLED(DISABLE_M503)
 
@@ -361,11 +373,12 @@ public:
 
   #endif // !TEMPERATURE_UNITS_SUPPORT
 
-  static inline float value_feedrate() { return value_linear_units(); }
+  static inline feedRate_t value_feedrate() { return MMM_TO_MMS(value_linear_units()); }
 
-  void unknown_command_error();
+  void unknown_command_warning();
 
   // Provide simple value accessors with default option
+  static inline char*    stringval(const char c, char * const dval=nullptr) { return seenval(c) ? value_string()   : dval; }
   static inline float    floatval(const char c, const float dval=0.0)   { return seenval(c) ? value_float()        : dval; }
   static inline bool     boolval(const char c, const bool dval=false)   { return seenval(c) ? value_bool()         : (seen(c) ? true : dval); }
   static inline uint8_t  byteval(const char c, const uint8_t dval=0)    { return seenval(c) ? value_byte()         : dval; }
