@@ -31,11 +31,11 @@ def trace(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        id = func.__name__
-        logger = logging.getLogger(id)
+        func_id = func.__name__
+        logger = logging.getLogger(func_id)
         try:
-            logger.info(f"{id}")
-            return func(*args, *kwargs)
+            logger.info(f"{func_id}")
+            return func(*args, **kwargs)
         except Exception as error:
             logger.exception(error)
             raise error
