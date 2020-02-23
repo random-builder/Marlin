@@ -36,6 +36,14 @@
 #include "../core/macros.h"
 #include "../../Configuration.h"
 
+// WARNING
+// experimental feature
+// can be removed without notice
+// see #13752 #13755 for usage patterns
+#if __has_include("../../user/Configuration.h")
+    #include "../../user/Configuration.h"
+#endif
+
 #ifdef CUSTOM_VERSION_FILE
   #if defined(__has_include)
     #if __has_include(XSTR(../../CUSTOM_VERSION_FILE))
@@ -53,6 +61,14 @@
 
 #include "../core/drivers.h"
 #include "../../Configuration_adv.h"
+
+// WARNING
+// experimental feature
+// can be removed without notice
+// see #13752 #13755 for usage patterns
+#if __has_include("../../user/Configuration_adv.h")
+    #include "../../user/Configuration_adv.h"
+#endif
 
 #include "Conditionals_adv.h"
 #include HAL_PATH(../HAL, inc/Conditionals_adv.h)

@@ -95,10 +95,9 @@
 #undef  DEFAULT_MAX_ACCELERATION
 #define DEFAULT_MAX_ACCELERATION      { 9000, 9000, 100, 10000, 10000 }
 
-#define JUNCTION_DEVIATION
-
-#undef  JUNCTION_DEVIATION_MM
-#define JUNCTION_DEVIATION_MM 0.05
+//#define JUNCTION_DEVIATION
+//#undef  JUNCTION_DEVIATION_MM
+//#define JUNCTION_DEVIATION_MM 0.05
 
 #define S_CURVE_ACCELERATION
 
@@ -110,12 +109,15 @@
 #define BLTOUCH
 #define BLTOUCH_DELAY 300
 
-#undef  X_PROBE_OFFSET_FROM_EXTRUDER
-#undef  Y_PROBE_OFFSET_FROM_EXTRUDER
-#undef  Z_PROBE_OFFSET_FROM_EXTRUDER
-#define X_PROBE_OFFSET_FROM_EXTRUDER 0   // X offset: -left  +right  [of the nozzle]
-#define Y_PROBE_OFFSET_FROM_EXTRUDER +46 // Y offset: -front +behind [the nozzle]
-#define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
+//#undef  X_PROBE_OFFSET_FROM_EXTRUDER
+//#undef  Y_PROBE_OFFSET_FROM_EXTRUDER
+//#undef  Z_PROBE_OFFSET_FROM_EXTRUDER
+//#define X_PROBE_OFFSET_FROM_EXTRUDER 0   // X offset: -left  +right  [of the nozzle]
+//#define Y_PROBE_OFFSET_FROM_EXTRUDER +46 // Y offset: -front +behind [the nozzle]
+//#define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
+
+#undef  NOZZLE_TO_PROBE_OFFSET
+#define NOZZLE_TO_PROBE_OFFSET {0, +46, 0} // X, Y, Z
 
 #undef  MIN_PROBE_EDGE
 #define MIN_PROBE_EDGE 0
