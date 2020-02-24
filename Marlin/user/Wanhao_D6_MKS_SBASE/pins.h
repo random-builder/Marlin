@@ -36,7 +36,8 @@
 #define CASE_LIGHT_PIN     P0_15   // s/w pwm "PWM1"
 
 // BLTouch trigger signal "BL/S"
-# define BLTOUCH_PIN       P1_22   // input
+#undef  Z_MIN_PROBE_PIN
+#define Z_MIN_PROBE_PIN    P1_22   // digital input
 
 //
 // Temperature Sensors

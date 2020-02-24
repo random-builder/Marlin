@@ -38,7 +38,9 @@
 #define HEATER_1_MAXTEMP 350
 
 // Wanhao-D6 24v 12ohm 50W
+// extruder #1
 // auto-tune command: "M303 E0 C8 S300"
+// extruder #2
 // auto-tune command: "M303 E1 C8 S300"
 #undef  DEFAULT_Kp
 #undef  DEFAULT_Ki
@@ -101,20 +103,13 @@
 
 #define S_CURVE_ACCELERATION
 
-// using BLTouch
-#undef  Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+// ???
+//#undef  Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 
-#define Z_MIN_PROBE_PIN BLTOUCH_PIN
 
 #define BLTOUCH
-#define BLTOUCH_DELAY 300
-
-//#undef  X_PROBE_OFFSET_FROM_EXTRUDER
-//#undef  Y_PROBE_OFFSET_FROM_EXTRUDER
-//#undef  Z_PROBE_OFFSET_FROM_EXTRUDER
-//#define X_PROBE_OFFSET_FROM_EXTRUDER 0   // X offset: -left  +right  [of the nozzle]
-//#define Y_PROBE_OFFSET_FROM_EXTRUDER +46 // Y offset: -front +behind [the nozzle]
-//#define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
+#define BLTOUCH_DELAY 700
+//#define BLTOUCH_FORCE_SW_MODE
 
 #undef  NOZZLE_TO_PROBE_OFFSET
 #define NOZZLE_TO_PROBE_OFFSET {0, +46, 0} // X, Y, Z
@@ -132,12 +127,16 @@
 #define NO_MOTION_BEFORE_HOMING
 
 // Enable negative probe offset
-#undef  MIN_SOFTWARE_ENDSTOP_Z
+//#undef  MIN_SOFTWARE_ENDSTOP_Z
+#undef  Z_MIN_POS
+#define Z_MIN_POS -3
 
 #define AUTO_BED_LEVELING_UBL
-#define ENABLE_LEVELING_FADE_HEIGHT
-#define SEGMENT_LEVELED_MOVES
-#define LEVELED_SEGMENT_LENGTH 5.0
+//#define ENABLE_LEVELING_FADE_HEIGHT
+//#define SEGMENT_LEVELED_MOVES
+//#define LEVELED_SEGMENT_LENGTH 5.0
+
+#define DEBUG_LEVELING_FEATURE
 
 #define RESTORE_LEVELING_AFTER_G28 false
 
