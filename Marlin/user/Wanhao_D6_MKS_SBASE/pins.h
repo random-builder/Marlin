@@ -7,13 +7,13 @@
 // 8 ADC channels: P0_02, P0_03, P0_23, P0_24, P0_25, P0_26, P1_30, P1_31
  
 // H/W PWM
-// Hardware channel   Attached pins
-// 1   P1_18, P2_00
-// 2   P1_20, P2_01, P3_25
-// 3   P1_21, P2_02, P3_26
-// 4   P1_23, P2_03
-// 5   P1_24, P2_04
-// 6   P1_26, P2_05
+// Hardware channel  ->  Attached pins
+// 1 ->  P1_18, P2_00
+// 2 ->  P1_20, P2_01, P3_25
+// 3 ->  P1_21, P2_02, P3_26
+// 4 ->  P1_23, P2_03
+// 5 ->  P1_24, P2_04
+// 6 ->  P1_26, P2_05
 
 //#define LED_PIN            P1_18   // Status indicator; h/w pwm channel #1
 //#define LED2_PIN           P1_19   // wired to EXP1#3

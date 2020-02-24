@@ -36,10 +36,7 @@
 #include "../core/macros.h"
 #include "../../Configuration.h"
 
-// WARNING
-// experimental feature
-// can be removed without notice
-// see #13752 #13755 for usage patterns
+// structured configuration; see #13752
 #if __has_include("../../user/Configuration.h")
     #include "../../user/Configuration.h"
 #endif
@@ -62,10 +59,7 @@
 #include "../core/drivers.h"
 #include "../../Configuration_adv.h"
 
-// WARNING
-// experimental feature
-// can be removed without notice
-// see #13752 #13755 for usage patterns
+// structured configuration; see #13752
 #if __has_include("../../user/Configuration_adv.h")
     #include "../../user/Configuration_adv.h"
 #endif

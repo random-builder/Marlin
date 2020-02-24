@@ -31,10 +31,7 @@
 
 #include "../pins/pins.h"
 
-// WARNING
-// experimental feature
-// can be removed without notice
-// see #13752 #13755 for usage patterns
+// structured configuration; see #13752
 #if __has_include("../../user/pins.h")
     #include "../../user/pins.h"
 #endif

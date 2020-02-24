@@ -4,6 +4,12 @@
 
 #pragma once
 
+// enable M43 - Debug Pins
+#define PINS_DEBUGGING
+
+// enable M111 S32
+#define DEBUG_LEVELING_FEATURE
+
 #undef  SERIAL_PORT
 #define SERIAL_PORT -1 // USB to OctoPrint
 
@@ -61,23 +67,27 @@
 #undef  EXTRUDE_MAXLENGTH
 #define EXTRUDE_MAXLENGTH 600
 
+// using motion limit switches
 #define USE_XMAX_PLUG
 #define USE_YMAX_PLUG
 #define USE_ZMAX_PLUG
 
+// using active/powered switches
 #undef  X_MIN_ENDSTOP_INVERTING
 #undef  Y_MIN_ENDSTOP_INVERTING
 #undef  Z_MIN_ENDSTOP_INVERTING
 #undef  X_MAX_ENDSTOP_INVERTING
 #undef  Y_MAX_ENDSTOP_INVERTING
 #undef  Z_MAX_ENDSTOP_INVERTING
-#undef  Z_MIN_PROBE_ENDSTOP_INVERTING
 #define X_MIN_ENDSTOP_INVERTING true
 #define Y_MIN_ENDSTOP_INVERTING true
 #define Z_MIN_ENDSTOP_INVERTING true
 #define X_MAX_ENDSTOP_INVERTING true
 #define Y_MAX_ENDSTOP_INVERTING true
 #define Z_MAX_ENDSTOP_INVERTING true
+
+// BLTOUCH: also see _adv.h for issue #13878
+#undef  Z_MIN_PROBE_ENDSTOP_INVERTING
 #define Z_MIN_PROBE_ENDSTOP_INVERTING true
 
 #define X_DRIVER_TYPE  DRV8825
@@ -103,20 +113,30 @@
 
 #define S_CURVE_ACCELERATION
 
-// ???
-//#undef  Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+// BLTOUCH: using servo zero
+#define Z_PROBE_SERVO_NR 0
 
+// BLTOUCH: using dedicated probe pin
+#undef  Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 
 #define BLTOUCH
-#define BLTOUCH_DELAY 700
-//#define BLTOUCH_FORCE_SW_MODE
+#undef  BLTOUCH_FORCE_SW_MODE
+#undef  BLTOUCH_FORCE_MODE_SET
 
+#define BLTOUCH_DELAY 600
+#define BLTOUCH_RESET_DELAY  800
+#define BLTOUCH_DEPLOY_DELAY 800
+#define BLTOUCH_STOW_DELAY   800
+
+// BLTOUCH: back mounted
 #undef  NOZZLE_TO_PROBE_OFFSET
-#define NOZZLE_TO_PROBE_OFFSET {0, +46, 0} // X, Y, Z
+#define NOZZLE_TO_PROBE_OFFSET { 0, +46, 0 } // X, Y, Z
 
+// BLTOUCH: using full bed area
 #undef  MIN_PROBE_EDGE
 #define MIN_PROBE_EDGE 0
 
+// BLTOUCH: remove heater noise
 #define PROBING_HEATERS_OFF
 
 #undef  INVERT_E0_DIR
@@ -136,8 +156,7 @@
 //#define SEGMENT_LEVELED_MOVES
 //#define LEVELED_SEGMENT_LENGTH 5.0
 
-#define DEBUG_LEVELING_FEATURE
-
+// expect G28 followed by G29
 #define RESTORE_LEVELING_AFTER_G28 false
 
 #define MESH_INSET 0
@@ -162,5 +181,4 @@
 #define NUM_SERVOS 4
 
 #undef  SERVO_DELAY
-#define SERVO_DELAY { 300, 300, 300, 300 }
-
+#define SERVO_DELAY { BLTOUCH_DELAY, 300, 300, 300 }
