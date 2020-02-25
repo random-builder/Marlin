@@ -5,10 +5,10 @@
 #pragma once
 
 // enable M43 - Debug Pins
-#define PINS_DEBUGGING
+//#define PINS_DEBUGGING
 
 // enable M111 S32
-#define DEBUG_LEVELING_FEATURE
+//#define DEBUG_LEVELING_FEATURE
 
 #undef  SERIAL_PORT
 #define SERIAL_PORT -1 // USB to OctoPrint
@@ -86,10 +86,6 @@
 #define Y_MAX_ENDSTOP_INVERTING true
 #define Z_MAX_ENDSTOP_INVERTING true
 
-// BLTOUCH: also see _adv.h for issue #13878
-#undef  Z_MIN_PROBE_ENDSTOP_INVERTING
-#define Z_MIN_PROBE_ENDSTOP_INVERTING true
-
 #define X_DRIVER_TYPE  DRV8825
 #define Y_DRIVER_TYPE  DRV8825
 #define Z_DRIVER_TYPE  DRV8825
@@ -107,10 +103,6 @@
 #undef  DEFAULT_MAX_ACCELERATION
 #define DEFAULT_MAX_ACCELERATION      { 9000, 9000, 100, 10000, 10000 }
 
-//#define JUNCTION_DEVIATION
-//#undef  JUNCTION_DEVIATION_MM
-//#define JUNCTION_DEVIATION_MM 0.05
-
 #define S_CURVE_ACCELERATION
 
 // BLTOUCH: using servo zero
@@ -119,14 +111,15 @@
 // BLTOUCH: using dedicated probe pin
 #undef  Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 
+// BLTOUCH: version 2.x
 #define BLTOUCH
 #undef  BLTOUCH_FORCE_SW_MODE
 #undef  BLTOUCH_FORCE_MODE_SET
 
-#define BLTOUCH_DELAY 600
-#define BLTOUCH_RESET_DELAY  800
-#define BLTOUCH_DEPLOY_DELAY 800
-#define BLTOUCH_STOW_DELAY   800
+#define BLTOUCH_DELAY 500
+#define BLTOUCH_RESET_DELAY    BLTOUCH_DELAY + 150
+#define BLTOUCH_DEPLOY_DELAY   BLTOUCH_DELAY + 150
+#define BLTOUCH_STOW_DELAY     BLTOUCH_DELAY + 150
 
 // BLTOUCH: back mounted
 #undef  NOZZLE_TO_PROBE_OFFSET
@@ -147,21 +140,29 @@
 #define NO_MOTION_BEFORE_HOMING
 
 // Enable negative probe offset
-//#undef  MIN_SOFTWARE_ENDSTOP_Z
-#undef  Z_MIN_POS
-#define Z_MIN_POS -3
+#undef  MIN_SOFTWARE_ENDSTOP_Z
+
+// probing clearance: ensure ~2 mm gap bed vs rod on deploy
+#undef  Z_CLEARANCE_DEPLOY_PROBE
+#undef  Z_CLEARANCE_BETWEEN_PROBES
+#undef  Z_CLEARANCE_MULTI_PROBE
+#undef  Z_AFTER_PROBING
+#define Z_CLEARANCE_DEPLOY_PROBE    4 // Z Clearance for Deploy/Stow
+#define Z_CLEARANCE_BETWEEN_PROBES  4 // Z Clearance between probe points
+#define Z_CLEARANCE_MULTI_PROBE     4 // Z Clearance between multiple probes
+#define Z_AFTER_PROBING             8 // Z position after probing is done
 
 #define AUTO_BED_LEVELING_UBL
-//#define ENABLE_LEVELING_FADE_HEIGHT
-//#define SEGMENT_LEVELED_MOVES
-//#define LEVELED_SEGMENT_LENGTH 5.0
+#define ENABLE_LEVELING_FADE_HEIGHT
+#define SEGMENT_LEVELED_MOVES
+#define LEVELED_SEGMENT_LENGTH 5.0
 
-// expect G28 followed by G29
+// expect G28 to be followed by G29
 #define RESTORE_LEVELING_AFTER_G28 false
 
 #define MESH_INSET 0
-#define GRID_MAX_POINTS_X 4
-#define GRID_MAX_POINTS_Y 4
+#define GRID_MAX_POINTS_X 5
+#define GRID_MAX_POINTS_Y 5
 
 #define UBL_MESH_EDIT_MOVES_Z
 
@@ -172,7 +173,7 @@
 #undef  HOMING_FEEDRATE_XY
 #undef  HOMING_FEEDRATE_Z
 #define HOMING_FEEDRATE_XY (80*60)
-#define HOMING_FEEDRATE_Z  (40*60)
+#define HOMING_FEEDRATE_Z  (10*60)
 
 #define EEPROM_SETTINGS
 

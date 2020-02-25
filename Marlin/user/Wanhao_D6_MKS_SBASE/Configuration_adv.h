@@ -7,11 +7,6 @@
 // BLTOUCH: work around issue #13368
 #undef DEACTIVATE_SERVOS_AFTER_MOVE
 
-// BLTOUCH: work around issue #13878
-#undef  Z_MIN_PROBE_ENDSTOP_INVERTING
-#define Z_MIN_PROBE_ENDSTOP_INVERTING true
-
-
 #define EMERGENCY_PARSER
 
 #define BINARY_FILE_TRANSFER
