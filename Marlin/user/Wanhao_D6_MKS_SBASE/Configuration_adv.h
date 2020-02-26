@@ -28,15 +28,16 @@
 #define CASE_LIGHT_DEFAULT_ON true
 #define CASE_LIGHT_DEFAULT_BRIGHTNESS 255
 
-#undef X_HOME_BUMP_MM
-#undef Y_HOME_BUMP_MM
-#undef Z_HOME_BUMP_MM
-#undef HOMING_BUMP_DIVISOR
+#undef  X_HOME_BUMP_MM
+#undef  Y_HOME_BUMP_MM
+#undef  Z_HOME_BUMP_MM
+#undef  HOMING_BUMP_DIVISOR
 #define X_HOME_BUMP_MM 4
 #define Y_HOME_BUMP_MM 4
 #define Z_HOME_BUMP_MM 2
 #define HOMING_BUMP_DIVISOR { 5, 5, 10 }
 
+// note: verify jumpers
 #undef  MICROSTEP_MODES
 #define MICROSTEP_MODES { 32, 32, 32, 32, 32 }
 

@@ -12,13 +12,13 @@
 #define PINS_DEBUGGING
 
 // enable M111 S32
-#define DEBUG_LEVELING_FEATURE
+//#define DEBUG_LEVELING_FEATURE
 
 #undef  SERIAL_PORT
 #define SERIAL_PORT -1 // USB to OctoPrint
 
 #undef  SERIAL_PORT_2
-#define SERIAL_PORT_2 0 // AUX-1 to TFT
+#define SERIAL_PORT_2 0 // AUX-1 to TFT panel
 
 #undef  MOTHERBOARD
 #define MOTHERBOARD BOARD_MKS_SBASE
@@ -135,41 +135,42 @@
 #define Z_AFTER_HOMING   9
 
 //
-// PROBE
+// PROBE/BLTOUCH
 //
 
 // enable negative probe offset
 #undef  MIN_SOFTWARE_ENDSTOP_Z
 
-// BLTOUCH: using servo zero
+// using servo zero
 #define Z_PROBE_SERVO_NR 0
 
-// BLTOUCH: using dedicated probe pin
+// using dedicated probe pin
 #undef  Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 
-// BLTOUCH: version 2.x
+// probe version 2.x
 #define BLTOUCH
 #undef  BLTOUCH_HS_MODE
 #undef  BLTOUCH_FORCE_SW_MODE
 #undef  BLTOUCH_FORCE_MODE_SET
 
+// fast/light plastic rod
 #define BLTOUCH_DELAY 200
 #define BLTOUCH_RESET_DELAY    BLTOUCH_DELAY + 100
 #define BLTOUCH_DEPLOY_DELAY   BLTOUCH_DELAY + 100
 #define BLTOUCH_STOW_DELAY     BLTOUCH_DELAY + 100
 
-// BLTOUCH: position
-// X: center of the nozzle
-// Y: far back of the nozzle
+// probe position
+// X: at center of the nozzle
+// Y: far in back of the nozzle
 // Z: deployed probe is below the nozzle
 #undef  NOZZLE_TO_PROBE_OFFSET
 #define NOZZLE_TO_PROBE_OFFSET { 0.0, +46.0, -3.0 } // X, Y, Z
 
-// BLTOUCH: using full bed area
+// using full bed area
 #undef  MIN_PROBE_EDGE
 #define MIN_PROBE_EDGE 0
 
-// BLTOUCH: remove heater noise
+// remove heater noise
 #define PROBING_HEATERS_OFF
 
 #undef  Z_PROBE_LOW_POINT
@@ -180,8 +181,8 @@
 #define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z
 #define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 3)
 
-// see probe.cpp
-// note: ensure ~2 mm gap bed-vs-rod on deploy
+// see src/module/probe.cpp
+// note: ensure ~3 mm gap bed-vs-rod on deploy
 #undef  Z_CLEARANCE_DEPLOY_PROBE
 #undef  Z_CLEARANCE_BETWEEN_PROBES
 #undef  Z_CLEARANCE_MULTI_PROBE
