@@ -27,3 +27,7 @@ https://github.com/random-builder/Marlin/blob/last-2020-02-22/Marlin/src/inc/Mar
 
 https://github.com/MarlinFirmware/Marlin/issues/12860
 
+### last check sum
+
+Recv: echo:Settings Stored (699 bytes; crc 44432)
+
