@@ -49,6 +49,38 @@
 
 #define ADAPTIVE_STEP_SMOOTHING
 
+//
+// nozzle temperature
+//
+
+#undef  WATCH_TEMP_PERIOD
+#undef  WATCH_TEMP_INCREASE
+#define WATCH_TEMP_PERIOD    40              // Seconds
+#define WATCH_TEMP_INCREASE   2              // Celsius
+
+#undef  THERMAL_PROTECTION_PERIOD
+#undef  THERMAL_PROTECTION_HYSTERESIS
+#define THERMAL_PROTECTION_PERIOD      60    // Seconds
+#define THERMAL_PROTECTION_HYSTERESIS   4    // Celsius
+
+//
+// hotbed temperature
+//
+
+#undef  WATCH_BED_TEMP_PERIOD
+#undef  WATCH_BED_TEMP_INCREASE
+#define WATCH_BED_TEMP_PERIOD     80               // Seconds
+#define WATCH_BED_TEMP_INCREASE    2               // Celsius
+
+#undef  THERMAL_PROTECTION_BED_PERIOD
+#undef  THERMAL_PROTECTION_BED_HYSTERESIS
+#define THERMAL_PROTECTION_BED_PERIOD        60 // Seconds
+#define THERMAL_PROTECTION_BED_HYSTERESIS     2 // Celsius
+
+//
+// chamber temperature
+//
+
 #undef  CHAMBER_MINTEMP
 #undef  CHAMBER_MAXTEMP
 #define CHAMBER_MINTEMP            10
@@ -57,4 +89,4 @@
 #undef  THERMAL_PROTECTION_CHAMBER_PERIOD
 #undef  THERMAL_PROTECTION_CHAMBER_HYSTERESIS
 #define THERMAL_PROTECTION_CHAMBER_PERIOD     60 // Seconds
-#define THERMAL_PROTECTION_CHAMBER_HYSTERESIS 1  // Celsius
+#define THERMAL_PROTECTION_CHAMBER_HYSTERESIS 2  // Celsius

@@ -37,10 +37,10 @@
 #undef  TEMP_SENSOR_1
 #undef  TEMP_SENSOR_BED
 #undef  TEMP_SENSOR_CHAMBER
-#define TEMP_SENSOR_0 20      // PT100 aplifier
-#define TEMP_SENSOR_1 20      // PT100 aplifier
-#define TEMP_SENSOR_BED 1     // 100k thermistor
-#define TEMP_SENSOR_CHAMBER 1 // 100k thermistor
+#define TEMP_SENSOR_0 20      // PT100 via aplifier
+#define TEMP_SENSOR_1 20      // PT100 via aplifier
+#define TEMP_SENSOR_BED 1     // 100k thermistor direct
+#define TEMP_SENSOR_CHAMBER 1 // 100k thermistor direct
 
 #undef  HEATER_0_MAXTEMP
 #undef  HEATER_1_MAXTEMP
@@ -48,6 +48,9 @@
 #define HEATER_1_MAXTEMP 350
 
 // Wanhao-D6 24v 12ohm 50W
+#undef  PIDTEMP
+#define PIDTEMP
+// note: set fan on during tune
 // extruder #1
 // auto-tune command: "M303 E0 C8 S300"
 // extruder #2
@@ -55,15 +58,20 @@
 #undef  DEFAULT_Kp
 #undef  DEFAULT_Ki
 #undef  DEFAULT_Kd
-#define DEFAULT_Kp 14.40
-#define DEFAULT_Ki 0.54
-#define DEFAULT_Kd 96.88
+#define DEFAULT_Kp 17.68
+#define DEFAULT_Ki 0.73
+#define DEFAULT_Kd 107.24
 
 // Wanhao-D6 24v 2ohm 300W pcb
+#undef  PIDTEMPBED
+#define PIDTEMPBED
 // auto-tune command: "M303 E-1 C8 S100"
-#define DEFAULT_bedKp 97.1
-#define DEFAULT_bedKi 1.41
-#define DEFAULT_bedKd 1675.16
+#undef  DEFAULT_bedKp
+#undef  DEFAULT_bedKi
+#undef  DEFAULT_bedKd
+#define DEFAULT_bedKp 49.69
+#define DEFAULT_bedKi 9.51
+#define DEFAULT_bedKd 173.09
 
 #undef  EXTRUDE_MINTEMP
 #define EXTRUDE_MINTEMP 200
