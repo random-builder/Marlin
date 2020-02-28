@@ -1165,6 +1165,9 @@ void setup() {
   #if HAS_SERVICE_INTERVALS
     ui.reset_status(true);  // Show service messages or keep current status
   #endif
+
+  HAL_servo_init();
+
 }
 
 /**

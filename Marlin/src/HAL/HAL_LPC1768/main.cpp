@@ -46,7 +46,27 @@ extern "C" void disk_timerproc();
 
 void SysTick_Callback() { disk_timerproc(); }
 
+void HAL_servo_init() {
+    // Init Servo Pins
+    #define INIT_SERVO(N) do { pinMode(SERVO##N##_PIN, OUTPUT); OUT_WRITE(SERVO##N##_PIN, LOW); } while(0)
+
+    #if HAS_SERVO_0
+      INIT_SERVO(0);
+    #endif
+    #if HAS_SERVO_1
+      INIT_SERVO(1);
+    #endif
+    #if HAS_SERVO_2
+      INIT_SERVO(2);
+    #endif
+    #if HAS_SERVO_3
+      INIT_SERVO(3);
+    #endif
+}
+
 void HAL_init() {
+
+  HAL_servo_init();
 
   // Init LEDs
   #if PIN_EXISTS(LED)
@@ -123,21 +143,7 @@ void HAL_init() {
 
   HAL_timer_init();
 
-  // Init Servo Pins
-  #define INIT_SERVO(N) do { pinMode(SERVO##N##_PIN, OUTPUT); OUT_WRITE(SERVO##N##_PIN, LOW); } while(0)
-
-  #if HAS_SERVO_0
-    INIT_SERVO(0);
-  #endif
-  #if HAS_SERVO_1
-    INIT_SERVO(1);
-  #endif
-  #if HAS_SERVO_2
-    INIT_SERVO(2);
-  #endif
-  #if HAS_SERVO_3
-    INIT_SERVO(3);
-  #endif
+  HAL_servo_init();
 
 }
 

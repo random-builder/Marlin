@@ -29,6 +29,7 @@
 #define CPU_32_BIT
 
 void HAL_init();
+void HAL_servo_init();
 
 #include <stdint.h>
 #include <stdarg.h>
