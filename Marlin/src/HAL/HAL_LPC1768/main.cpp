@@ -72,6 +72,21 @@ void HAL_init() {
     }
   #endif
 
+  // Init Servo Pins
+  #define INIT_SERVO(N) OUT_WRITE(SERVO##N##_PIN, LOW)
+  #if HAS_SERVO_0
+    INIT_SERVO(0);
+  #endif
+  #if HAS_SERVO_1
+    INIT_SERVO(1);
+  #endif
+  #if HAS_SERVO_2
+    INIT_SERVO(2);
+  #endif
+  #if HAS_SERVO_3
+    INIT_SERVO(3);
+  #endif
+
   //debug_frmwrk_init();
   //_DBG("\n\nDebug running\n");
   // Initialise the SD card chip select pins as soon as possible
@@ -122,23 +137,6 @@ void HAL_init() {
   }
 
   HAL_timer_init();
-
-  // Init Servo Pins
-  #define INIT_SERVO(N) do { pinMode(SERVO##N##_PIN, OUTPUT); OUT_WRITE(SERVO##N##_PIN, LOW); } while(0)
-
-  #if HAS_SERVO_0
-    INIT_SERVO(0);
-  #endif
-  #if HAS_SERVO_1
-    INIT_SERVO(1);
-  #endif
-  #if HAS_SERVO_2
-    INIT_SERVO(2);
-  #endif
-  #if HAS_SERVO_3
-    INIT_SERVO(3);
-  #endif
-
 }
 
 // HAL idle task
