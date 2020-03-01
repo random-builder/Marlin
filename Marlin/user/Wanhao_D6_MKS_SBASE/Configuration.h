@@ -47,25 +47,35 @@
 #define HEATER_0_MAXTEMP 350
 #define HEATER_1_MAXTEMP 350
 
-// Wanhao-D6 24v 12ohm 50W
-#undef  PIDTEMP
-#define PIDTEMP
 // note: set fan on during tune
 // extruder #1
 // auto-tune command: "M303 E0 C8 S300"
 // extruder #2
 // auto-tune command: "M303 E1 C8 S300"
+#undef  PIDTEMP
+#define PIDTEMP
+
+// 24v 12ohm 50W, large block
+//#undef  DEFAULT_Kp
+//#undef  DEFAULT_Ki
+//#undef  DEFAULT_Kd
+//#define DEFAULT_Kp 17.68
+//#define DEFAULT_Ki 0.73
+//#define DEFAULT_Kd 107.24
+
+// 24v 12ohm 50W, small block
 #undef  DEFAULT_Kp
 #undef  DEFAULT_Ki
 #undef  DEFAULT_Kd
-#define DEFAULT_Kp 17.68
-#define DEFAULT_Ki 0.73
-#define DEFAULT_Kd 107.24
+#define DEFAULT_Kp 12.09
+#define DEFAULT_Ki 0.57
+#define DEFAULT_Kd 63.74
 
-// Wanhao-D6 24v 2ohm 300W pcb
+// auto-tune command: "M303 E-1 C8 S100"
 #undef  PIDTEMPBED
 #define PIDTEMPBED
-// auto-tune command: "M303 E-1 C8 S100"
+
+// Wanhao-D6 24v 2ohm 300W pcb
 #undef  DEFAULT_bedKp
 #undef  DEFAULT_bedKi
 #undef  DEFAULT_bedKd
