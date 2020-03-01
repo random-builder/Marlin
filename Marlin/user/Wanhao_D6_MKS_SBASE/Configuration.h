@@ -83,10 +83,16 @@
 #define DEFAULT_bedKi 9.51
 #define DEFAULT_bedKd 173.09
 
+// faster filament load/unload
+#undef  PREVENT_COLD_EXTRUSION
 #undef  EXTRUDE_MINTEMP
-#define EXTRUDE_MINTEMP 200
+#define PREVENT_COLD_EXTRUSION
+#define EXTRUDE_MINTEMP 195
 
+// using bowden with gearbox
+#undef  PREVENT_LENGTHY_EXTRUDE
 #undef  EXTRUDE_MAXLENGTH
+#define PREVENT_LENGTHY_EXTRUDE
 #define EXTRUDE_MAXLENGTH 600
 
 // using direct drive gears

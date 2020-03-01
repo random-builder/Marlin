@@ -21,7 +21,8 @@
 #undef  DIGIPOT_I2C_MOTOR_CURRENTS
 #define DIGIPOT_I2C_MOTOR_CURRENTS { 1.2, 1.2, 1.2, 0.8, 0.8 }
 
-#define LIN_ADVANCE
+// makes extruder crazy
+#undef  LIN_ADVANCE
 #define LIN_ADVANCE_K 0.22
 
 #define CASE_LIGHT_ENABLE
