@@ -20,6 +20,10 @@
 //#define LED2_PIN           P1_19   // wired to EXP1#3
 //#define LED3_PIN           P1_20   // wired to EXP1#4;  h/w pwm channel #2
 //#define LED4_PIN           P1_21   // wired to EXP1#5;  h/w pwm channel #3
+#undef    LED2_PIN
+#undef    LED3_PIN
+#undef    LED4_PIN
+
 
 //
 // Servo pin
