@@ -19,8 +19,8 @@ root_dir = os.path.dirname(base_dir)
 def platformio_run():
 
 #     user_stamp = time.strftime("%Y-%m-%d")
-#     user_stamp = time.strftime("%Y-%m-%d_%H-%M-%S")
-    user_stamp = "NONE"
+    user_stamp = time.strftime("%Y-%m-%d_%H-%M-%S")
+#     user_stamp = "NONE"
 
     build_dir = f"{root_dir}/.pioenvs/{printer_name}"
     build_flags = f"-D{printer_name}=true -DUSER_STAMP={user_stamp}"
