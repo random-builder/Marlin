@@ -19,10 +19,11 @@ root_dir = os.path.dirname(base_dir)
 def platformio_run():
 
 #     user_stamp = time.strftime("%Y-%m-%d")
-    user_stamp = time.strftime("%Y-%m-%d_%H-%M-%S")
+#     user_stamp = time.strftime("%Y-%m-%d_%H-%M-%S")
+    user_stamp = "NONE"
 
     build_dir = f"{root_dir}/.pioenvs/{printer_name}"
-    build_flags = f"-D{printer_name} -DUSER_STAMP={user_stamp}"
+    build_flags = f"-D{printer_name}=true -DUSER_STAMP={user_stamp}"
 
     script_setup = os.path.join(this_dir, "setup.py")
 
@@ -46,5 +47,13 @@ def platformio_run():
 
     # invoke build
     platformio = f"{root_dir}/.env/bin/platformio"
-    command_build = [platformio, "run", "--environment", environment, "--project-dir", root_dir, "--target", "setup"]
+    command_build = [
+        platformio, "run",
+        "--environment", environment,
+        "--project-dir", root_dir,
+        "--target", "setup",
+        "--disable-auto-clean",
+#         "--upload-port", "/tmp",
+#         "--verbose",
+    ]
     subprocess.run(command_build)

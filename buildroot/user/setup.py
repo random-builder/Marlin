@@ -54,9 +54,14 @@ root_dir = env['PROJECT_DIR']
 this_dir = os.path.join(root_dir, "buildroot/user")
 setup_disk = os.path.join(this_dir, "setup_disk.py")
 
+# setup_target = env.Alias("setup",
+#     "$BUILD_DIR/firmware.bin",
+#     f"{setup_disk} --firmware_path $SOURCE.abspath"
+#     )
+
 setup_target = env.Alias("setup",
     "$BUILD_DIR/firmware.bin",
-    f"{setup_disk} --firmware_path $SOURCE.abspath"
+    f"ls -las $SOURCE.abspath"
     )
 
 env.AlwaysBuild(setup_target)
