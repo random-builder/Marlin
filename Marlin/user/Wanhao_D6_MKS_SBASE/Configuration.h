@@ -9,7 +9,7 @@
 #define EEPROM_SETTINGS
 
 // enable M43 - Debug Pins
-//#define PINS_DEBUGGING
+#define PINS_DEBUGGING
 
 // enable M111 S32
 //#define DEBUG_LEVELING_FEATURE

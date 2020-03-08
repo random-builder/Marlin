@@ -280,7 +280,27 @@ inline void servo_probe_test() {
  *  M43 S       - Servo probe test
  *                  P<index> - Probe index (optional - defaults to 0
  */
+
+// view lpc1768 pwm state
+void tester_report(uint8_t this_pin) {
+    SERIAL_ECHOLNPGM("TESTER START");
+    //
+    bool pin_has_pwm = LPC176x::pin_has_pwm(this_pin);
+    bool pin_pwm_enabled = LPC176x::pin_pwm_enabled(this_pin);
+    uint8_t pin_get_pwm_channel = LPC176x::pin_get_pwm_channel(this_pin);
+    //
+    SERIAL_ECHOLNPAIR("this_pin: ", this_pin);
+    SERIAL_ECHOLNPAIR("pin_has_pwm: ", pin_has_pwm);
+    SERIAL_ECHOLNPAIR("pin_pwm_enabled: ", pin_pwm_enabled);
+    SERIAL_ECHOLNPAIR("pin_get_pwm_channel: ", pin_get_pwm_channel);
+    //
+    SERIAL_ECHOLNPGM("TESTER FINISH");
+}
+
 void GcodeSuite::M43() {
+
+  if (parser.seen('A')) return tester_report(P3_25);
+  if (parser.seen('B')) return tester_report(P3_26);
 
   // 'T' must be first. It uses 'S' and 'E' differently.
   if (parser.seen('T')) return toggle_pins();
