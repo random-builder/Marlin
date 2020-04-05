@@ -20,4 +20,4 @@ source .env/bin/activate
 
 pip_opts="--timeout 1 --retries 15 --prefer-binary"
 
-pip install --upgrade $pip_opts platformio
+pip install --upgrade $pip_opts pip platformio
