@@ -11,7 +11,7 @@
 
 #define BINARY_FILE_TRANSFER
 
-#define DIGIPOT_I2C
+#define DIGIPOT_MCP4451
 #define DIGIPOT_I2C_ADDRESS_A 0x2C
 #define DIGIPOT_I2C_ADDRESS_B 0x2D
 
@@ -29,13 +29,9 @@
 #define CASE_LIGHT_DEFAULT_ON true
 #define CASE_LIGHT_DEFAULT_BRIGHTNESS 255
 
-#undef  X_HOME_BUMP_MM
-#undef  Y_HOME_BUMP_MM
-#undef  Z_HOME_BUMP_MM
+#undef  HOMING_BUMP_MM
 #undef  HOMING_BUMP_DIVISOR
-#define X_HOME_BUMP_MM 4
-#define Y_HOME_BUMP_MM 4
-#define Z_HOME_BUMP_MM 2
+#define HOMING_BUMP_MM      { 4, 4, 2 }
 #define HOMING_BUMP_DIVISOR { 5, 5, 10 }
 
 // note: verify jumpers
