@@ -188,7 +188,7 @@
 // Y: far in back of the nozzle
 // Z: deployed probe is below the nozzle
 #undef  NOZZLE_TO_PROBE_OFFSET
-#define NOZZLE_TO_PROBE_OFFSET { 0.0, +46.0, -3.0 } // X, Y, Z
+#define NOZZLE_TO_PROBE_OFFSET { +0.0, +46.0, -1.0 } // X, Y, Z
 
 // using full bed area
 #undef  MIN_PROBE_EDGE
